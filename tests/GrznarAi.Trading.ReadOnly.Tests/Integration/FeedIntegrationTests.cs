@@ -100,10 +100,10 @@ public class FeedIntegrationTests
         var instruments = await _client.SearchInstrumentsAsync(new InstrumentSearchRequest
         {
             Fields = [InstrumentFields.InstrumentId, InstrumentFields.Symbol],
-            PageSize = 1
+            PageSize = 5
         });
         var firstDiscussion = await _client.GetInstrumentFeedPostsAsync(
-            instruments.Instruments[0].InstrumentId ?? AaplMarketId,
+            instruments.Instruments[4].InstrumentId ?? AaplMarketId,
             new FeedPostsRequest { Take = 1 });
 
         if (firstDiscussion.Discussions.Count == 0)

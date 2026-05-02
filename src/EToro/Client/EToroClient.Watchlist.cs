@@ -101,10 +101,11 @@ public sealed partial class EToroClient
         var qs = new QueryStringBuilder()
             .Add("pageNumber", pageNumber)
             .Add("itemsPerPage", itemsPerPage);
-        return await GetFromJsonAsync<WatchlistDto>(
+        var response = await GetFromJsonAsync<WatchlistsResponse>(
             $"watchlists/public/{userId}/{QueryStringBuilder.EscapePathSegment(watchlistId)}{qs}",
             "Empty single public watchlist response.",
             ct).ConfigureAwait(false);
+        return response.Watchlists[0];
     }
 
     public async Task<WatchlistsResponse> GetSingleWatchlistAsync(
