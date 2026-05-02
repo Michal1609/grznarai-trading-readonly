@@ -6,6 +6,8 @@
     <IsPackable>false</IsPackable>
     <UserSecretsId>GrznarAi.Trading.ReadOnly.Tests.Integration</UserSecretsId>
     <NoWarn>$(NoWarn);CA1305;CA1826;CA1859;CA1861</NoWarn>
+    <!-- CA1716: 'ReadOnly' is a VB.NET keyword; suppressed intentionally — this is a C# library and the name is by design. -->
+    <NoWarn>$(NoWarn);CA1716</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
