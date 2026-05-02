@@ -32,7 +32,7 @@ jobs:
       NUGET_SOURCE: https://api.nuget.org/v3/index.json
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: main
           fetch-depth: 0
