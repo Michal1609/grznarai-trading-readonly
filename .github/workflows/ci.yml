@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Build and test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v5
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: dotnet restore GrznarAi.Trading.ReadOnly.slnx
+
+      - name: Build
+        run: dotnet build GrznarAi.Trading.ReadOnly.slnx --configuration Release --no-restore -warnaserror
+
+      - name: Test
+        run: dotnet test GrznarAi.Trading.ReadOnly.slnx --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}
+          path: "**/*.trx"
+
+      - name: NativeAOT smoke publish
+        if: matrix.os == 'ubuntu-latest'
+        run: dotnet publish tests/GrznarAi.Trading.ReadOnly.Aot.SmokeTest/GrznarAi.Trading.ReadOnly.Aot.SmokeTest.csproj --configuration Release --runtime linux-x64 --self-contained true /p:PublishAot=true /p:IlcTreatWarningsAsErrors=true -warnaserror:IL2026,IL2104,IL3050
+
+      - name: Pack
+        if: matrix.os == 'ubuntu-latest'
+        run: dotnet pack src/EToro/GrznarAi.Trading.ReadOnly.csproj --configuration Release --no-build --output artifacts/packages
+
+      - name: Upload NuGet artifacts
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/packages/
+
+  podman-smoke:
+    name: Podman smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Podman
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends podman
+
+      - name: Show Podman version
+        run: sudo podman --version
+
+      - name: Test in .NET SDK container
+        run: |
+          sudo podman run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            mcr.microsoft.com/dotnet/sdk:9.0 \
+            dotnet test GrznarAi.Trading.ReadOnly.slnx --configuration Release

@@ -1,0 +1,22 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+## [Unreleased]
+
+## [1.0.0-alpha.1] - 2026-05-02
+
+### Added
+- Initial public release.
+- Typed .NET client for the eToro public API (`IEToroClient`).
+- `HttpClientFactory` integration with DI extension `AddEToro`.
+- Rate-limit handling with sliding window and per-user-key keyed limiter.
+- Authentication handler for `x-api-key` / `x-user-key` headers.
+- Automatic retry on HTTP 429 with `Retry-After` support.
+- API exception type (`EToroApiException`) with response body redaction.
+- Account calculation service (`IEToroCalculationService`): available cash, invested principal, unrealized PnL, realized PnL, equity, total return.
+- Read-only API areas: Trading, Market Data, User Info, Social, Feed, Watchlists.
+- Source-generated JSON serialization (AOT-path ready).
+- Symbols package (snupkg) with SourceLink.

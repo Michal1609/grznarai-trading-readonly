@@ -1,0 +1,203 @@
+name: Publish NuGet
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'NuGet package version to publish, e.g. 1.0.0-alpha.1, 1.0.0-beta.1, 1.0.0-rc.1, 1.0.0'
+        required: true
+        default: '1.0.0-alpha.1'
+      confirm_publish:
+        description: 'Type publish to confirm publishing to NuGet.org'
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build, pack, and publish ${{ inputs.version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: nuget.org
+    permissions:
+      contents: write
+    env:
+      PACKAGE_ID: GrznarAi.Trading.ReadOnly
+      PACKAGE_VERSION: ${{ inputs.version }}
+      NUGET_SOURCE: https://api.nuget.org/v3/index.json
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Validate release inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "NuGet publishing must be started from the main branch."
+            exit 1
+          fi
+
+          if [ "${{ inputs.confirm_publish }}" != "publish" ]; then
+            echo "Set confirm_publish to 'publish' to publish to NuGet.org."
+            exit 1
+          fi
+
+          if ! [[ "$PACKAGE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z][0-9A-Za-z-]*(\.[0-9A-Za-z][0-9A-Za-z-]*)*)?$ ]]; then
+            echo "Version '$PACKAGE_VERSION' is not a supported SemVer/NuGet version."
+            exit 1
+          fi
+
+          if ! grep -Fq "## [$PACKAGE_VERSION]" CHANGELOG.md; then
+            echo "CHANGELOG.md must contain a section for [$PACKAGE_VERSION]."
+            exit 1
+          fi
+
+      - name: Validate tag and NuGet package availability
+        id: release_state
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          tag="v$PACKAGE_VERSION"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+          git fetch --force --tags origin
+          if git rev-parse "$tag" >/dev/null 2>&1; then
+            tag_sha="$(git rev-list -n 1 "$tag")"
+            head_sha="$(git rev-parse HEAD)"
+            if [ "$tag_sha" != "$head_sha" ]; then
+              echo "Tag $tag already exists and points to $tag_sha, not current main $head_sha."
+              exit 1
+            fi
+
+            echo "tag_exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag_exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          package_id_lower="$(echo "$PACKAGE_ID" | tr '[:upper:]' '[:lower:]')"
+          version_lower="$(echo "$PACKAGE_VERSION" | tr '[:upper:]' '[:lower:]')"
+          package_url="https://api.nuget.org/v3-flatcontainer/$package_id_lower/$version_lower/$package_id_lower.$version_lower.nupkg"
+          status_code="$(curl -sS -o /dev/null -w '%{http_code}' "$package_url")"
+
+          if [ "$status_code" = "200" ]; then
+            echo "Package $PACKAGE_ID $PACKAGE_VERSION already exists on NuGet.org."
+            exit 1
+          fi
+
+          if [ "$status_code" != "404" ]; then
+            echo "NuGet availability check returned unexpected HTTP status $status_code."
+            exit 1
+          fi
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: dotnet restore GrznarAi.Trading.ReadOnly.slnx
+
+      - name: Build
+        run: dotnet build GrznarAi.Trading.ReadOnly.slnx --configuration Release --no-restore -warnaserror /p:Version="$PACKAGE_VERSION"
+
+      - name: Test
+        run: dotnet test GrznarAi.Trading.ReadOnly.slnx --configuration Release --no-build
+
+      - name: Pack
+        run: dotnet pack src/EToro/GrznarAi.Trading.ReadOnly.csproj --configuration Release --no-build --output artifacts/packages /p:Version="$PACKAGE_VERSION" /p:PackageVersion="$PACKAGE_VERSION"
+
+      - name: Validate package output
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          package_id_lower="$(echo "$PACKAGE_ID" | tr '[:upper:]' '[:lower:]')"
+          expected_nupkg="artifacts/packages/$package_id_lower.$PACKAGE_VERSION.nupkg"
+          expected_snupkg="artifacts/packages/$package_id_lower.$PACKAGE_VERSION.snupkg"
+
+          test -f "$expected_nupkg"
+          test -f "$expected_snupkg"
+
+      - name: Extract release notes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          awk -v version="$PACKAGE_VERSION" '
+            $0 == "## [" version "]" || index($0, "## [" version "] - ") == 1 { capture = 1; next }
+            capture && /^## \[/ { exit }
+            capture { print }
+          ' CHANGELOG.md > artifacts/release-notes.md
+
+          if [ ! -s artifacts/release-notes.md ]; then
+            echo "No release notes found for $PACKAGE_VERSION in CHANGELOG.md."
+            exit 1
+          fi
+
+      - name: Upload NuGet artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-${{ inputs.version }}
+          path: |
+            artifacts/packages/*.nupkg
+            artifacts/packages/*.snupkg
+            artifacts/release-notes.md
+
+      - name: Create and push release tag
+        if: steps.release_state.outputs.tag_exists == 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.release_state.outputs.tag }}" -m "Release ${{ steps.release_state.outputs.tag }}"
+          git push origin "${{ steps.release_state.outputs.tag }}"
+
+      - name: Publish package to NuGet.org
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for package in artifacts/packages/*.nupkg; do
+            dotnet nuget push "$package" --api-key "${{ secrets.NUGET_API_KEY }}" --source "$NUGET_SOURCE" --skip-duplicate
+          done
+
+      - name: Publish symbols to NuGet.org
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for package in artifacts/packages/*.snupkg; do
+            dotnet nuget push "$package" --api-key "${{ secrets.NUGET_API_KEY }}" --source "$NUGET_SOURCE" --skip-duplicate
+          done
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_state.outputs.tag }}
+          name: ${{ steps.release_state.outputs.tag }}
+          prerelease: ${{ contains(inputs.version, '-') }}
+          body_path: artifacts/release-notes.md
+          files: |
+            artifacts/packages/*.nupkg
+            artifacts/packages/*.snupkg

@@ -1,0 +1,44 @@
+# Build outputs
+bin/
+obj/
+artifacts/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+
+# Visual Studio / IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.rsuser
+
+# Local assistant/tooling state
+.claude/
+
+# Local configuration and secrets
+**/appsettings.json
+**/appsettings.*.json
+!**/appsettings*.example.json
+**/appsetings*.json
+!**/appsetings*.example.json
+*.local.json
+.env
+.env.*
+!.env.example
+
+# Local API dumps
+response.json
+*.response.json
+*.har
+
+# Secret scan reports
+gitleaks-report.*
+trufflehog-report.*
+
+# OS files
+Thumbs.db
+Desktop.ini

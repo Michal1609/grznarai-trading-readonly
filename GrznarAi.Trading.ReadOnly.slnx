@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EToro/GrznarAi.Trading.ReadOnly.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GrznarAi.Trading.ReadOnly.Aot.SmokeTest/GrznarAi.Trading.ReadOnly.Aot.SmokeTest.csproj" />
+    <Project Path="tests/GrznarAi.Trading.ReadOnly.Tests/GrznarAi.Trading.ReadOnly.Tests.csproj" />
+  </Folder>
+</Solution>
