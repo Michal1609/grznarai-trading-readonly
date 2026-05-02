@@ -32,7 +32,7 @@ jobs:
       NUGET_SOURCE: https://api.nuget.org/v3/index.json
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: main
           fetch-depth: 0
@@ -101,12 +101,12 @@ jobs:
           fi
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 9.0.x
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props') }}
@@ -154,7 +154,7 @@ jobs:
           fi
 
       - name: Upload NuGet artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-${{ inputs.version }}
           path: |
@@ -192,7 +192,7 @@ jobs:
           done
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.release_state.outputs.tag }}
           name: ${{ steps.release_state.outputs.tag }}
