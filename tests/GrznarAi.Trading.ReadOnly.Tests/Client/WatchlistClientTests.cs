@@ -302,15 +302,19 @@ public class WatchlistClientTests
     {
         var json = """
         {
-          "watchlistId": "wl-pub-1",
-          "name": "Public List",
-          "Gcid": 100,
-          "watchlistType": "Static",
-          "totalItems": 0,
-          "isDefault": false,
-          "isUserSelectedDefault": false,
-          "watchlistRank": 0,
-          "items": []
+          "status": 200,
+          "isSucceeded": true,
+          "watchlists": [{
+            "watchlistId": "wl-pub-1",
+            "name": "Public List",
+            "Gcid": 100,
+            "watchlistType": "Static",
+            "totalItems": 0,
+            "isDefault": false,
+            "isUserSelectedDefault": false,
+            "watchlistRank": 0,
+            "items": []
+          }]
         }
         """;
         var handler = new MockHttpMessageHandler(json);
@@ -325,15 +329,19 @@ public class WatchlistClientTests
     {
         var json = """
         {
-          "watchlistId": "wl-x",
-          "name": "X",
-          "Gcid": 1,
-          "watchlistType": "Static",
-          "totalItems": 0,
-          "isDefault": false,
-          "isUserSelectedDefault": false,
-          "watchlistRank": 0,
-          "items": []
+          "status": 200,
+          "isSucceeded": true,
+          "watchlists": [{
+            "watchlistId": "wl-x",
+            "name": "X",
+            "Gcid": 1,
+            "watchlistType": "Static",
+            "totalItems": 0,
+            "isDefault": false,
+            "isUserSelectedDefault": false,
+            "watchlistRank": 0,
+            "items": []
+          }]
         }
         """;
         var handler = new MockHttpMessageHandler(json);
@@ -350,17 +358,21 @@ public class WatchlistClientTests
     {
         var json = """
         {
-          "watchlistId": "pub-wl",
-          "name": "Tech Watch",
-          "Gcid": 55,
-          "watchlistType": "Dynamic",
-          "totalItems": 3,
-          "isDefault": false,
-          "isUserSelectedDefault": false,
-          "watchlistRank": 2,
-          "dynamicUrl": "https://example.com/dynamic",
-          "items": [],
-          "relatedAssets": [1001, 1002]
+          "status": 200,
+          "isSucceeded": true,
+          "watchlists": [{
+            "watchlistId": "pub-wl",
+            "name": "Tech Watch",
+            "Gcid": 55,
+            "watchlistType": "Dynamic",
+            "totalItems": 3,
+            "isDefault": false,
+            "isUserSelectedDefault": false,
+            "watchlistRank": 2,
+            "dynamicUrl": "https://example.com/dynamic",
+            "items": [],
+            "relatedAssets": [1001, 1002]
+          }]
         }
         """;
         var handler = new MockHttpMessageHandler(json);
