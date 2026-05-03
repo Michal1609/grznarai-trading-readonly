@@ -130,9 +130,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          package_id_lower="$(echo "$PACKAGE_ID" | tr '[:upper:]' '[:lower:]')"
-          expected_nupkg="artifacts/packages/$package_id_lower.$PACKAGE_VERSION.nupkg"
-          expected_snupkg="artifacts/packages/$package_id_lower.$PACKAGE_VERSION.snupkg"
+          expected_nupkg="artifacts/packages/$PACKAGE_ID.$PACKAGE_VERSION.nupkg"
+          expected_snupkg="artifacts/packages/$PACKAGE_ID.$PACKAGE_VERSION.snupkg"
 
           test -f "$expected_nupkg"
           test -f "$expected_snupkg"
