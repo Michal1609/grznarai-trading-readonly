@@ -75,6 +75,7 @@ public class EToroAuthHandlerTests
             UserKey = request.Headers.GetValues("x-user-key").SingleOrDefault();
             RequestId = request.Headers.GetValues("x-request-id").SingleOrDefault();
 
+            // CodeQL [cs/local-not-disposed] - ownership is transferred to HttpClient caller, which disposes the response.
             var response = new HttpResponseMessage(HttpStatusCode.OK);
             return Task.FromResult(response);
         }

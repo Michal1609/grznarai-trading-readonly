@@ -24,12 +24,10 @@ public sealed class MockHttpMessageHandler : HttpMessageHandler
         LastRequestUri = request.RequestUri?.ToString();
         LastRequestHeaders = request.Headers;
 
-        var response = new HttpResponseMessage(_statusCode)
+        return Task.FromResult(new HttpResponseMessage(_statusCode)
         {
             Content = new StringContent(_responseJson, Encoding.UTF8, "application/json"),
             RequestMessage = request
-        };
-
-        return Task.FromResult(response);
+        });
     }
 }
