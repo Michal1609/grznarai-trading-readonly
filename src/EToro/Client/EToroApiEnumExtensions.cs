@@ -7,8 +7,9 @@ namespace GrznarAi.Trading.ReadOnly.Client;
 
 internal static class EToroApiEnumExtensions
 {
-    public static string ToApiString(this Enum value) =>
-        value switch
+    public static string ToApiString(this Enum value) => value switch
+    {
+        CandleInterval ci => ci switch
         {
             CandleInterval.OneMinute => "OneMinute",
             CandleInterval.FiveMinutes => "FiveMinutes",
@@ -19,8 +20,16 @@ internal static class EToroApiEnumExtensions
             CandleInterval.FourHours => "FourHours",
             CandleInterval.OneDay => "OneDay",
             CandleInterval.OneWeek => "OneWeek",
+            _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Enum value is not mapped to an eToro API token.")
+        },
+        CandleDirection cd => cd switch
+        {
             CandleDirection.Asc => "Asc",
             CandleDirection.Desc => "Desc",
+            _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Enum value is not mapped to an eToro API token.")
+        },
+        PopularInvestorPeriod pip => pip switch
+        {
             PopularInvestorPeriod.CurrMonth => "CurrMonth",
             PopularInvestorPeriod.CurrQuarter => "CurrQuarter",
             PopularInvestorPeriod.CurrYear => "CurrYear",
@@ -31,6 +40,10 @@ internal static class EToroApiEnumExtensions
             PopularInvestorPeriod.ThreeMonthsAgo => "ThreeMonthsAgo",
             PopularInvestorPeriod.SixMonthsAgo => "SixMonthsAgo",
             PopularInvestorPeriod.OneYearAgo => "OneYearAgo",
+            _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Enum value is not mapped to an eToro API token.")
+        },
+        UserInfoPeriod uip => uip switch
+        {
             UserInfoPeriod.CurrMonth => "CurrMonth",
             UserInfoPeriod.CurrQuarter => "CurrQuarter",
             UserInfoPeriod.CurrYear => "CurrYear",
@@ -41,12 +54,22 @@ internal static class EToroApiEnumExtensions
             UserInfoPeriod.ThreeMonthsAgo => "ThreeMonthsAgo",
             UserInfoPeriod.SixMonthsAgo => "SixMonthsAgo",
             UserInfoPeriod.OneYearAgo => "OneYearAgo",
+            _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Enum value is not mapped to an eToro API token.")
+        },
+        UserDailyGainType udgt => udgt switch
+        {
             UserDailyGainType.Daily => "Daily",
             UserDailyGainType.Period => "Period",
+            _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Enum value is not mapped to an eToro API token.")
+        },
+        WatchlistType wt => wt switch
+        {
             WatchlistType.Static => "Static",
             WatchlistType.Dynamic => "Dynamic",
             WatchlistType.RecentlyInvested => "RecentlyInvested",
             WatchlistType.Default => "Default",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Enum value is not mapped to an eToro API token.")
-        };
+        },
+        _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Enum value is not mapped to an eToro API token.")
+    };
 }
