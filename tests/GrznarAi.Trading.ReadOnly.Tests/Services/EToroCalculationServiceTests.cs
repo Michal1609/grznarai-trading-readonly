@@ -6,6 +6,7 @@ using GrznarAi.Trading.ReadOnly.Services;
 using NUnit.Framework;
 using System.Globalization;
 using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 
 namespace GrznarAi.Trading.ReadOnly.Tests.Services;
@@ -479,10 +480,7 @@ public class EToroCalculationServiceTests
         }
 
         private static Task<HttpResponseMessage> JsonResponse(string json) =>
-            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(json, Encoding.UTF8, "application/json")
-            });
+            new StringContent(json, Encoding.UTF8, "application/json").ReadAsHttpResponseMessageAsync();
 
         private static int ReadIntQueryValue(Uri uri, string name)
         {
