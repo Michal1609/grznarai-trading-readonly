@@ -480,7 +480,10 @@ public class EToroCalculationServiceTests
         }
 
         private static Task<HttpResponseMessage> JsonResponse(string json) =>
-            new StringContent(json, Encoding.UTF8, "application/json").ReadAsHttpResponseMessageAsync();
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            });
 
         private static int ReadIntQueryValue(Uri uri, string name)
         {
