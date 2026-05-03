@@ -146,13 +146,10 @@ public sealed class EToroCalculationService(IEToroClient client) : IEToroCalcula
                 return realizedPnl;
 
             var newTrades = false;
-            foreach (var trade in response.Trades)
+            foreach (var trade in response.Trades.Where(t => seenPositionIds.Add(t.PositionId)))
             {
-                if (seenPositionIds.Add(trade.PositionId))
-                {
-                    realizedPnl += trade.NetProfit;
-                    newTrades = true;
-                }
+                realizedPnl += trade.NetProfit;
+                newTrades = true;
             }
 
             if (!newTrades || response.Trades.Count < pageSize)

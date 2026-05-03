@@ -73,7 +73,8 @@ public class TransientHttpErrorHandlerTests
         ]);
         var client = BuildClient(inner);
 
-        var response = await client.PostAsync("/test", new StringContent("payload"));
+        using var content = new StringContent("payload");
+        var response = await client.PostAsync("/test", content);
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.ServiceUnavailable));
         Assert.That(inner.CallCount, Is.EqualTo(1));
