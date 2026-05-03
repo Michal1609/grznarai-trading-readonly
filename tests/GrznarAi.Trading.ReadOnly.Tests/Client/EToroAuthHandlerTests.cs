@@ -75,8 +75,7 @@ public class EToroAuthHandlerTests
             UserKey = request.Headers.GetValues("x-user-key").SingleOrDefault();
             RequestId = request.Headers.GetValues("x-request-id").SingleOrDefault();
 
-            var response = new HttpResponseMessage(HttpStatusCode.OK);
-            return Task.FromResult(response);
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
         }
     }
 }

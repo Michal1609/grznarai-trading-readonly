@@ -478,25 +478,21 @@ public class EToroCalculationServiceTests
             return JsonResponse(json);
         }
 
-        private static Task<HttpResponseMessage> JsonResponse(string json)
-        {
-            var response = new HttpResponseMessage(HttpStatusCode.OK)
+        private static Task<HttpResponseMessage> JsonResponse(string json) =>
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(json, Encoding.UTF8, "application/json")
-            };
-            return Task.FromResult(response);
-        }
+            });
 
         private static int ReadIntQueryValue(Uri uri, string name)
         {
-            var query = uri.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var pair in query.Select(p => p.Split('=', 2)))
-            {
-                if (pair.Length == 2 && pair[0] == name)
-                    return int.Parse(Uri.UnescapeDataString(pair[1]));
-            }
+            var pair = uri.Query.TrimStart('?')
+                .Split('&', StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Split('=', 2))
+                .Where(p => p.Length == 2 && p[0] == name)
+                .FirstOrDefault();
 
-            return 0;
+            return pair is not null ? int.Parse(Uri.UnescapeDataString(pair[1])) : 0;
         }
 
         private static string ToJson(ClosedTrade trade)
