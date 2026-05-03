@@ -90,7 +90,8 @@ public class EToroClientExtensionsTests
     {
         var services = new ServiceCollection();
 
-        Assert.Throws<ArgumentNullException>(() => services.AddEToro((IConfiguration)null!));
+        IConfiguration nullConfig = null!;
+        Assert.Throws<ArgumentNullException>(() => services.AddEToro(nullConfig));
     }
 
     [Test]

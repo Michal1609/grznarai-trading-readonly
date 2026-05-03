@@ -480,18 +480,18 @@ public class EToroCalculationServiceTests
 
         private static Task<HttpResponseMessage> JsonResponse(string json)
         {
-            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent(json, Encoding.UTF8, "application/json")
-            });
+            };
+            return Task.FromResult(response);
         }
 
         private static int ReadIntQueryValue(Uri uri, string name)
         {
             var query = uri.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var part in query)
+            foreach (var pair in query.Select(p => p.Split('=', 2)))
             {
-                var pair = part.Split('=', 2);
                 if (pair.Length == 2 && pair[0] == name)
                     return int.Parse(Uri.UnescapeDataString(pair[1]));
             }

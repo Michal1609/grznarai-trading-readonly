@@ -161,7 +161,8 @@ public class RateLimitHandlerTests
             RetryJitterRatio = 0
         });
 
-        var response = await client.PostAsync("/test", new StringContent("payload"));
+        using var content = new StringContent("payload");
+        var response = await client.PostAsync("/test", content);
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.TooManyRequests));
         Assert.That(inner.CallCount, Is.EqualTo(1));
@@ -184,7 +185,8 @@ public class RateLimitHandlerTests
             RetryNonIdempotentRequests = true
         });
 
-        var response = await client.PostAsync("/test", new StringContent("payload"));
+        using var content = new StringContent("payload");
+        var response = await client.PostAsync("/test", content);
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(inner.CallCount, Is.EqualTo(2));

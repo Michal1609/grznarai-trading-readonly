@@ -167,9 +167,13 @@ public class MarketDataIntegrationTests
         var result = await _client.GetHistoricalClosingPricesAsync();
 
         var aapl = result.FirstOrDefault(i => i.InstrumentId == AaplInstrumentId);
-        if (aapl is null) Assert.Pass("AAPL not in closing prices response.");
+        if (aapl is null)
+        {
+            Assert.Pass("AAPL not in closing prices response.");
+            return;
+        }
 
-        Debug.WriteLine($"AAPL official close: {aapl!.OfficialClosingPrice}");
+        Debug.WriteLine($"AAPL official close: {aapl.OfficialClosingPrice}");
         Debug.WriteLine($"AAPL daily: {aapl.ClosingPrices?.Daily?.Price} at {aapl.ClosingPrices?.Daily?.Date}");
         Debug.WriteLine($"AAPL weekly: {aapl.ClosingPrices?.Weekly?.Price}");
         Debug.WriteLine($"AAPL monthly: {aapl.ClosingPrices?.Monthly?.Price}");

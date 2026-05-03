@@ -10,6 +10,7 @@ public static class EToroClientExtensions
 {
     private const string DefaultHost = "public-api.etoro.com";
 
+    /// <summary>Registers eToro client services, binding options from <paramref name="configuration"/>.</summary>
     /// <param name="useKeyedRateLimiter">
     /// When <see langword="true"/>, registers <see cref="EToroKeyedRateLimiter"/> which maintains
     /// independent rate limit windows per user key. Required when one application instance serves
@@ -25,6 +26,7 @@ public static class EToroClientExtensions
         return services.AddEToroCore(useKeyedRateLimiter);
     }
 
+    /// <summary>Registers eToro client services, configuring options via <paramref name="configureOptions"/>.</summary>
     /// <param name="useKeyedRateLimiter">
     /// When <see langword="true"/>, registers <see cref="EToroKeyedRateLimiter"/> which maintains
     /// independent rate limit windows per user key. Required when one application instance serves
