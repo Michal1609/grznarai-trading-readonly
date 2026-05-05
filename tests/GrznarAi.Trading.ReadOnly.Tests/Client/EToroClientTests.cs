@@ -469,22 +469,7 @@ public class EToroClientTests
     }
 
     [Test]
-    public async Task SearchInstrumentsAsync_WithSort_AppendsParam()
-    {
-        var json = """{ "items": [], "totalItems": 0, "page": 1, "pageSize": 20 }""";
-        var handler = new MockHttpMessageHandler(json);
-
-        await CreateClient(handler).SearchInstrumentsAsync(new InstrumentSearchRequest
-        {
-            Fields = [InstrumentFields.InstrumentId],
-            Sort = "dailyChange desc"
-        });
-
-        Assert.That(handler.LastRequestUri, Does.Contain("sort="));
-    }
-
-    [Test]
-    public async Task SearchInstrumentsAsync_WithPagination_AppendsParams()
+    public async Task SearchInstrumentsAsync_WithPagination_AppendsPageSizeParam()
     {
         var json = """{ "items": [], "totalItems": 0, "page": 1, "pageSize": 10 }""";
         var handler = new MockHttpMessageHandler(json);
@@ -493,11 +478,9 @@ public class EToroClientTests
         {
             Fields = [InstrumentFields.InstrumentId],
             PageSize = 10,
-            PageNumber = 3
         });
 
         Assert.That(handler.LastRequestUri, Does.Contain("pageSize=10"));
-        Assert.That(handler.LastRequestUri, Does.Contain("pageNumber=3"));
     }
 
     [Test]
@@ -506,7 +489,7 @@ public class EToroClientTests
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
+        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
         {
             Fields =
             [

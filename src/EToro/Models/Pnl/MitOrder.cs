@@ -14,5 +14,9 @@ public record MitOrder(
     [property: JsonPropertyName("takeProfitRate")] decimal TakeProfitRate = 0,
     [property: JsonPropertyName("stopLossRate")]   decimal StopLossRate = 0,
     [property: JsonPropertyName("isTslEnabled")]   bool IsTslEnabled = false,
-    [property: JsonPropertyName("openDateTime")]   DateTimeOffset? OpenDateTime = null
+    [property: JsonPropertyName("openDateTime")]   DateTimeOffset? OpenDateTime = null,
+    [property: JsonPropertyName("executionType")]  int ExecutionType = 0,
+    [property: JsonPropertyName("isDiscounted")]   bool IsDiscounted = false,
+    [property: JsonPropertyName("isNoTakeProfit")] bool IsNoTakeProfit = false,
+    [property: JsonPropertyName("isNoStopLoss")]   bool IsNoStopLoss = false
 );

@@ -47,8 +47,10 @@ public interface IEToroMarketDataClient
         CancellationToken ct = default);
 
     /// <summary>
-    /// Search for instruments by fields, text and pagination.
-    /// <br/>CZ: Vyhledá nástroje podle polí, textu a stránkování.
+    /// Search for instruments by fields and optional text filter. PageSize is capped at 100.
+    /// Note: sort and pageNumber parameters are not supported by the eToro API and have been removed.
+    /// <br/>CZ: Vyhledá nástroje podle polí a volitelného textového filtru. PageSize je omezen na 100.
+    /// Parametry sort a pageNumber nejsou eToro API podporovány a byly odstraněny.
     /// </summary>
     Task<InstrumentSearchResponse> SearchInstrumentsAsync(
         InstrumentSearchRequest request,

@@ -35,7 +35,6 @@ public sealed partial class EToroClient
             .AddIfHasValue("isTestAccount", request.IsTestAccount)
             .AddIfHasValue("optIn", request.OptIn)
             .AddIfHasValue("blocked", request.Blocked)
-            .AddIfHasValue("popularInvestor", request.PopularInvestor)
             .AddIfHasValue("gainMax", request.GainMax)
             .AddIfHasValue("maxDailyRiskScoreMin", request.MaxDailyRiskScoreMin)
             .AddIfHasValue("maxDailyRiskScoreMax", request.MaxDailyRiskScoreMax)

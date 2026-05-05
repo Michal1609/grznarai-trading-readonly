@@ -6,7 +6,6 @@ public sealed record UserSearchRequest
     public bool? IsTestAccount { get; init; }
     public bool? OptIn { get; init; }
     public bool? Blocked { get; init; }
-    public bool? PopularInvestor { get; init; }
     public int? GainMax { get; init; }
     public int? MaxDailyRiskScoreMin { get; init; }
     public int? MaxDailyRiskScoreMax { get; init; }

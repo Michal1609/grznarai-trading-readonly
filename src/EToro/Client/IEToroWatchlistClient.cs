@@ -29,12 +29,11 @@ public interface IEToroWatchlistClient
         CancellationToken ct = default);
 
     /// <summary>
-    /// Retrieves items from the user's default watchlists with optional pagination.
-    /// <br/>CZ: Vrátí položky z výchozích sledovaných seznamů uživatele s volitelnou stránkovací.
+    /// Retrieves items from the user's default watchlists with an optional total-count limit.
+    /// <br/>CZ: Vrátí položky z výchozích sledovaných seznamů uživatele s volitelným omezením celkového počtu.
     /// </summary>
     Task<IReadOnlyList<WatchlistItemDto>> GetDefaultWatchlistItemsAsync(
         int? itemsLimit = null,
-        int itemsPerPage = 100,
         CancellationToken ct = default);
 
     /// <summary>
