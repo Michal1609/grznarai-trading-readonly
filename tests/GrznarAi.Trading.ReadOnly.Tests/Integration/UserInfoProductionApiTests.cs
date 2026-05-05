@@ -249,11 +249,10 @@ public class UserInfoProductionApiTests
         });
 
         Debug.WriteLine($"[RiskScore={min}-{max}] returned={result.Items.Count} totalItems={result.TotalItems}");
-        foreach (var item in result.Items)
+        foreach (var item in result.Items.Where(item => item.MaxDailyRiskScore < min || item.MaxDailyRiskScore > max))
         {
-            if (item.MaxDailyRiskScore < min || item.MaxDailyRiskScore > max)
-                Debug.WriteLine($"⚠ CustomerId={item.CustomerId} MaxDailyRiskScore={item.MaxDailyRiskScore} " +
-                                $"mimo rozsah [{min},{max}]");
+            Debug.WriteLine($"⚠ CustomerId={item.CustomerId} MaxDailyRiskScore={item.MaxDailyRiskScore} " +
+                            $"mimo rozsah [{min},{max}]");
         }
     }
 
