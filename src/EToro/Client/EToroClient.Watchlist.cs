@@ -47,11 +47,8 @@ public sealed partial class EToroClient
 
     public async Task<IReadOnlyList<WatchlistItemDto>> GetDefaultWatchlistItemsAsync(
         int? itemsLimit = null,
-        int itemsPerPage = 100,
         CancellationToken ct = default)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(itemsPerPage, 0);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(itemsPerPage, EToroRequestLimits.MaxItemsPerPage);
         if (itemsLimit.HasValue)
         {
             ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(itemsLimit.Value, 0);
@@ -59,7 +56,6 @@ public sealed partial class EToroClient
         }
 
         var qs = new QueryStringBuilder()
-            .Add("itemsPerPage", itemsPerPage)
             .AddIfHasValue("itemsLimit", itemsLimit);
 
         return await GetFromJsonAsync<IReadOnlyList<WatchlistItemDto>>(

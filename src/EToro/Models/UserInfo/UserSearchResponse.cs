@@ -8,7 +8,7 @@ public record UserSearchResponse(
 );
 
 public record UserSearchItem(
-    [property: JsonPropertyName("customerId")] int CustomerId,
+    [property: JsonPropertyName("customerId")] int? CustomerId,
     [property: JsonPropertyName("userName")] string? UserName,
     [property: JsonPropertyName("fullName")] string? FullName,
     [property: JsonPropertyName("hasAvatar")] bool HasAvatar,

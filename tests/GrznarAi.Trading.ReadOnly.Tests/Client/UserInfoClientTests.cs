@@ -101,7 +101,6 @@ public class UserInfoClientTests
             IsTestAccount = false,
             OptIn = true,
             Blocked = false,
-            PopularInvestor = true,
             GainMax = 100,
             MaxDailyRiskScoreMin = 1,
             MaxDailyRiskScoreMax = 7,
@@ -122,7 +121,6 @@ public class UserInfoClientTests
         Assert.That(handler.LastRequestUri, Does.Contain("isTestAccount=false"));
         Assert.That(handler.LastRequestUri, Does.Contain("optIn=true"));
         Assert.That(handler.LastRequestUri, Does.Contain("blocked=false"));
-        Assert.That(handler.LastRequestUri, Does.Contain("popularInvestor=true"));
         Assert.That(handler.LastRequestUri, Does.Contain("gainMax=100"));
         Assert.That(handler.LastRequestUri, Does.Contain("weeksSinceRegistrationMin=75"));
         Assert.That(handler.LastRequestUri, Does.Contain("instrumentId=-5"));

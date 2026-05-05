@@ -65,24 +65,20 @@ public sealed partial class EToroClient
         if (fieldList.Count == 0)
             throw new ArgumentException("At least one field is required.", nameof(request));
         if (fieldList.Count > 5)
-            throw new ArgumentException("API allows max 5 fields per request.", nameof(request));
+            throw new ArgumentOutOfRangeException(nameof(request), "API allows max 5 fields per request.");
 
         var unknownFields = fieldList.Where(f => !InstrumentFields.All.Contains(f)).ToList();
         if (unknownFields.Count > 0)
             throw new ArgumentException($"Unknown field(s): {string.Join(", ", unknownFields)}. Use constants from InstrumentFields.", nameof(request));
 
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(request.PageSize, 0);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(request.PageSize, EToroRequestLimits.MaxPageSize);
-        ArgumentOutOfRangeException.ThrowIfNegative(request.PageNumber);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(request.PageSize, EToroRequestLimits.MaxSearchPageSize);
         EToroInputValidator.ValidateOptionalString(request.SearchText, nameof(request.SearchText), EToroRequestLimits.MaxSearchTextLength);
-        EToroInputValidator.ValidateOptionalString(request.Sort, nameof(request.Sort), EToroRequestLimits.MaxSortLength);
 
         var qs = new QueryStringBuilder()
             .AddCsv("fields", fieldList)
             .Add("searchText", request.SearchText)
-            .Add("pageSize", request.PageSize)
-            .Add("pageNumber", request.PageNumber)
-            .Add("sort", request.Sort);
+            .Add("pageSize", request.PageSize);
 
         return await GetFromJsonAsync<InstrumentSearchResponse>(
             $"market-data/search{qs}",

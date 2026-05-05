@@ -116,7 +116,7 @@ public class WatchlistIntegrationTests
     [Test]
     public async Task GetDefaultWatchlistItemsAsync_ReturnsItems()
     {
-        var result = await _client.GetDefaultWatchlistItemsAsync(itemsPerPage: 10);
+        var result = await _client.GetDefaultWatchlistItemsAsync(itemsLimit: 10);
 
         Debug.WriteLine($"Default watchlist items: {result.Count}");
         foreach (var item in result)

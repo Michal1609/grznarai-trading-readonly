@@ -7,7 +7,8 @@ namespace GrznarAi.Trading.ReadOnly.Client;
 public static class EToroRequestLimits
 {
     public const int MaxPageSize = 200;
-    public const int MaxItemsPerPage = 500;
+    public const int MaxSearchPageSize = 100;
+    public const int MaxItemsPerPage = 1000;
     public const int MaxItemsCount = 500;
     public const int MaxItemsLimit = 10_000;
     public const int MaxCandlesCount = 1_000;

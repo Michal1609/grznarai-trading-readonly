@@ -212,10 +212,9 @@ public class WatchlistClientTests
         var json = "[]";
         var handler = new MockHttpMessageHandler(json);
 
-        await CreateClient(handler).GetDefaultWatchlistItemsAsync(itemsLimit: 25, itemsPerPage: 50);
+        await CreateClient(handler).GetDefaultWatchlistItemsAsync(itemsLimit: 25);
 
         Assert.That(handler.LastRequestUri, Does.Contain("itemsLimit=25"));
-        Assert.That(handler.LastRequestUri, Does.Contain("itemsPerPage=50"));
     }
 
     [Test]

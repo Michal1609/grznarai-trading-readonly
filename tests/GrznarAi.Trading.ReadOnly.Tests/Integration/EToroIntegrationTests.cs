@@ -123,7 +123,6 @@ public class EToroIntegrationTests
         {
             Fields = [InstrumentFields.InstrumentId, InstrumentFields.DisplayName],
             PageSize = 20,
-            PageNumber = 0
         });
 
         Debug.WriteLine($"First page instruments: {result.Instruments.Count} / {result.TotalItems}");
