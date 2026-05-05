@@ -2,6 +2,7 @@ using GrznarAi.Trading.ReadOnly.Client;
 using GrznarAi.Trading.ReadOnly.Models.UserInfo;
 using NUnit.Framework;
 using System.Diagnostics;
+using System.Linq;
 
 namespace GrznarAi.Trading.ReadOnly.Tests.Integration;
 
@@ -410,10 +411,9 @@ public class UserInfoProductionApiTests
 
         var minAllowed = new DateTimeOffset(from.Year, from.Month, from.Day, 0, 0, 0, TimeSpan.Zero).AddDays(-1);
         var maxAllowed = new DateTimeOffset(today.Year, today.Month, today.Day, 23, 59, 59, TimeSpan.Zero).AddDays(1);
-        foreach (var entry in result.Daily)
+        foreach (var entry in result.Daily.Where(entry => entry.Timestamp < minAllowed || entry.Timestamp > maxAllowed))
         {
-            if (entry.Timestamp < minAllowed || entry.Timestamp > maxAllowed)
-                Debug.WriteLine($"⚠ Timestamp {entry.Timestamp:yyyy-MM-dd} mimo rozsah [{from},{today}]");
+            Debug.WriteLine($"⚠ Timestamp {entry.Timestamp:yyyy-MM-dd} mimo rozsah [{from},{today}]");
         }
     }
 
