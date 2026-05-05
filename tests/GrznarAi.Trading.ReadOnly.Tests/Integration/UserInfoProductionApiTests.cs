@@ -390,8 +390,8 @@ public class UserInfoProductionApiTests
         Assert.That(result, Is.Not.Null);
         var count = result.Daily?.Count ?? 0;
         Debug.WriteLine($"[DailyGain days={days}] entries={count}");
-        if (result.IsDaily && result.Daily!.Count > days)
-            Debug.WriteLine($"⚠ Vráceno {result.Daily.Count} entries pro {days} dní");
+        if (result.IsDaily && count > days)
+            Debug.WriteLine($"⚠ Vráceno {count} entries pro {days} dní");
     }
 
     [Test]
