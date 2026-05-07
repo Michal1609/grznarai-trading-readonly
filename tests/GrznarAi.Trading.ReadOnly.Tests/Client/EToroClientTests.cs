@@ -557,7 +557,7 @@ public class EToroClientTests
         Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
         {
             Fields = [InstrumentFields.InstrumentId],
-            PageSize = EToroRequestLimits.MaxPageSize + 1
+            PageSize = EToroRequestLimits.MaxSearchPageSize + 1
         }));
     }
 
