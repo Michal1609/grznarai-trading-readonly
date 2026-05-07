@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.0-alpha.2] - 2026-05-07
+
+### Fixed
+- Raised the `SearchInstrumentsAsync` `pageSize` limit to `20000`, allowing all roughly 12000 instruments to be downloaded in a single request.
+
 ## [1.0.0-alpha.1] - 2026-05-02
 
 ### Added

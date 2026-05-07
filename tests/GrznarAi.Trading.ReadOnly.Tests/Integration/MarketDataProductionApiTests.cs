@@ -776,6 +776,20 @@ public class MarketDataProductionApiTests
         });
     }
 
+    [Test]
+    public async Task SearchInstrumentsAsync_BigPageSize_ReturnsAllInstruments()
+    {
+        var result = await _client.SearchInstrumentsAsync(new InstrumentSearchRequest
+        {
+            Fields = [InstrumentFields.InstrumentId, InstrumentFields.InternalSymbolFull],
+            PageSize = 12000,
+        });
+
+        Debug.WriteLine($"[Search] Bez SearchText → total={result.TotalItems} returned={result.Instruments.Count}");
+
+        Assert.That(result.TotalItems, Is.GreaterThan(11000), "Bez filtru by měl vrátit instrumenty.");
+    }
+
     // ═══════════════════════════════════════════════════════════════════════════
     // GetStocksIndustriesAsync
     // Dokumentace: query param stocksIndustryIds (optional), žádná paginace

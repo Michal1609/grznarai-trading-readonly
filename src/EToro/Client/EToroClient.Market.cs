@@ -74,9 +74,11 @@ public sealed partial class EToroClient
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(request.PageSize, 0);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(request.PageSize, EToroRequestLimits.MaxSearchPageSize);
         EToroInputValidator.ValidateOptionalString(request.SearchText, nameof(request.SearchText), EToroRequestLimits.MaxSearchTextLength);
+        EToroInputValidator.ValidateOptionalString(request.InternalSymbolFull, nameof(request.InternalSymbolFull), EToroRequestLimits.MaxSearchTextLength);
 
         var qs = new QueryStringBuilder()
             .AddCsv("fields", fieldList)
+            .Add("internalSymbolFull", request.InternalSymbolFull)
             .Add("searchText", request.SearchText)
             .Add("pageSize", request.PageSize);
 
