@@ -122,6 +122,10 @@ Minimal `appsettings.json` (see also `appsettings.example.json`):
 
 Never commit real `ApiKey` or `UserKey` values. Use user secrets, environment variables, CI secrets, or your production secret store.
 
+## Examples
+
+The `examples` folder now contains simple sample applications that demonstrate how to use the client.
+
 ## Documentation
 
 English:
