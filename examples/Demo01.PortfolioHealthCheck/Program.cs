@@ -144,7 +144,7 @@ if (topIds.Count > 0)
         foreach (var d in meta.InstrumentDisplayDatas)
             nameById[d.InstrumentId] = d.SymbolFull ?? d.InstrumentDisplayName ?? $"#{d.InstrumentId}";
     }
-    catch
+    catch (Exception ex) when (ex is not OperationCanceledException)
     {
         // Non-critical; falls back to ID display
     }
