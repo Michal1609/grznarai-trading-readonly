@@ -26,6 +26,7 @@ using GrznarAi.Trading.ReadOnly.Models.Common;
 using GrznarAi.Trading.ReadOnly.Models.Pnl;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 
 // ── 1. Build DI host and register the eToro client ───────────────────────────
 //
@@ -72,7 +73,12 @@ try
 {
     pnl = await trading.GetPnlAsync(EToroEnvironment.Real);
 }
-catch (Exception ex)
+catch (HttpRequestException ex)
+{
+    Console.Error.WriteLine($"Error: {ex.Message}");
+    return 1;
+}
+catch (TaskCanceledException ex)
 {
     Console.Error.WriteLine($"Error: {ex.Message}");
     return 1;
