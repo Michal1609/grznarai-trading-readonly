@@ -1,4 +1,5 @@
 using GrznarAi.Trading.ReadOnly.Client;
+using GrznarAi.Trading.ReadOnly.Models.Calculations;
 using GrznarAi.Trading.ReadOnly.Models.Common;
 using GrznarAi.Trading.ReadOnly.Models.Pnl;
 using GrznarAi.Trading.ReadOnly.Models.Trades;
@@ -433,8 +434,104 @@ public class EToroCalculationServiceTests
         Assert.That(handler.TradeHistoryUris, Has.Count.EqualTo(2));
     }
 
+    [Test]
+    public async Task GetPortfolioInstrumentAllocationAsync_IncludesManualAndMirrorPositions()
+    {
+        var handler = new AllocationHttpMessageHandler();
+        var client = new EToroClient(new HttpClient(handler)
+        {
+            BaseAddress = new Uri("https://public-api.etoro.com/api/v1/")
+        });
+        var service = new EToroCalculationService(client);
+
+        var result = await service.GetPortfolioInstrumentAllocationAsync(EToroEnvironment.Real);
+
+        Assert.That(result, Has.Count.EqualTo(2));
+
+        var amd = result.Single(row => row.InstrumentId == 1832);
+        Assert.That(amd.Symbol, Is.EqualTo("AMD"));
+        Assert.That(amd.AssetClass, Is.EqualTo("Stocks"));
+        Assert.That(amd.Industry, Is.EqualTo("Technology"));
+        Assert.That(amd.InvestedAmount, Is.EqualTo(500m));
+        Assert.That(amd.ManualAmount, Is.EqualTo(300m));
+        Assert.That(amd.MirrorAmount, Is.EqualTo(200m));
+        Assert.That(amd.Share, Is.EqualTo(0.625m));
+        Assert.That(amd.PositionCount, Is.EqualTo(2));
+
+        var nvda = result.Single(row => row.InstrumentId == 1004);
+        Assert.That(nvda.Symbol, Is.EqualTo("NVDA"));
+        Assert.That(nvda.InvestedAmount, Is.EqualTo(300m));
+        Assert.That(nvda.Share, Is.EqualTo(0.375m));
+    }
+
+    [Test]
+    public void CalculatePortfolioAssetClassAllocation_GroupsRows()
+    {
+        var rows = new[]
+        {
+            AllocationRow(1, "AMD", assetClassId: 5, assetClass: "Stocks", industryId: 10, industry: "Technology", amount: 500m, positions: 2),
+            AllocationRow(2, "SPY", assetClassId: 6, assetClass: "ETF", industryId: null, industry: "Unknown industry", amount: 300m, positions: 1),
+            AllocationRow(3, "NVDA", assetClassId: 5, assetClass: "Stocks", industryId: 10, industry: "Technology", amount: 200m, positions: 1),
+        };
+
+        var result = _service.CalculatePortfolioAssetClassAllocation(rows);
+
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result[0].GroupName, Is.EqualTo("Stocks"));
+        Assert.That(result[0].InvestedAmount, Is.EqualTo(700m));
+        Assert.That(result[0].Share, Is.EqualTo(0.7m));
+        Assert.That(result[0].InstrumentCount, Is.EqualTo(2));
+        Assert.That(result[0].PositionCount, Is.EqualTo(3));
+        Assert.That(result[1].GroupName, Is.EqualTo("ETF"));
+        Assert.That(result[1].InvestedAmount, Is.EqualTo(300m));
+    }
+
+    [Test]
+    public void CalculatePortfolioIndustryAllocation_GroupsRows()
+    {
+        var rows = new[]
+        {
+            AllocationRow(1, "AMD", assetClassId: 5, assetClass: "Stocks", industryId: 10, industry: "Technology", amount: 500m, positions: 2),
+            AllocationRow(2, "JNJ", assetClassId: 5, assetClass: "Stocks", industryId: 20, industry: "Healthcare", amount: 300m, positions: 1),
+            AllocationRow(3, "NVDA", assetClassId: 5, assetClass: "Stocks", industryId: 10, industry: "Technology", amount: 200m, positions: 1),
+        };
+
+        var result = _service.CalculatePortfolioIndustryAllocation(rows);
+
+        Assert.That(result, Has.Count.EqualTo(2));
+        Assert.That(result[0].GroupName, Is.EqualTo("Technology"));
+        Assert.That(result[0].InvestedAmount, Is.EqualTo(700m));
+        Assert.That(result[0].Share, Is.EqualTo(0.7m));
+        Assert.That(result[0].InstrumentCount, Is.EqualTo(2));
+        Assert.That(result[0].PositionCount, Is.EqualTo(3));
+        Assert.That(result[1].GroupName, Is.EqualTo("Healthcare"));
+        Assert.That(result[1].InvestedAmount, Is.EqualTo(300m));
+    }
+
     private static ClosedTrade CreateTrade(decimal netProfit) =>
         CreateTrade(positionId: 9000, netProfit);
+
+    private static PortfolioInstrumentAllocation AllocationRow(
+        int instrumentId,
+        string symbol,
+        int? assetClassId,
+        string assetClass,
+        int? industryId,
+        string industry,
+        decimal amount,
+        int positions) =>
+        new(
+            instrumentId,
+            symbol,
+            assetClassId,
+            assetClass,
+            industryId,
+            industry,
+            amount,
+            Share: 0,
+            ManualAmount: amount,
+            MirrorAmount: 0,
+            PositionCount: positions);
 
     private static ClosedTrade CreateTrade(long positionId, decimal netProfit) =>
         new(PositionId: positionId, InstrumentId: 1001, IsBuy: true, Leverage: 1,
@@ -522,5 +619,102 @@ public class EToroCalculationServiceTests
             }
             """;
         }
+    }
+
+    private sealed class AllocationHttpMessageHandler : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            var pathAndQuery = request.RequestUri!.PathAndQuery;
+
+            if (pathAndQuery.Contains("trading/info/real/pnl", StringComparison.Ordinal))
+            {
+                return JsonResponse("""
+                {
+                  "clientPortfolio": {
+                    "credit": 1000,
+                    "positions": [
+                      { "positionID": 1, "instrumentID": 1832, "amount": 300, "unrealizedPnL": { "pnL": 0 } },
+                      { "positionID": 2, "instrumentID": 1004, "amount": 300, "unrealizedPnL": { "pnL": 0 } }
+                    ],
+                    "mirrors": [
+                      {
+                        "mirrorId": 7,
+                        "availableAmount": 0,
+                        "closedPositionsNetProfit": 0,
+                        "positions": [
+                          { "positionID": 3, "instrumentID": 1832, "amount": 200, "unrealizedPnL": { "pnL": 0 } }
+                        ]
+                      }
+                    ],
+                    "ordersForOpen": [],
+                    "orders": []
+                  }
+                }
+                """);
+            }
+
+            if (pathAndQuery.Contains("market-data/instruments?", StringComparison.Ordinal))
+            {
+                return JsonResponse("""
+                {
+                  "instrumentDisplayDatas": [
+                    {
+                      "instrumentID": 1004,
+                      "instrumentDisplayName": "NVIDIA",
+                      "instrumentTypeID": 5,
+                      "symbolFull": "NVDA",
+                      "stocksIndustryId": 10
+                    },
+                    {
+                      "instrumentID": 1832,
+                      "instrumentDisplayName": "Advanced Micro Devices",
+                      "instrumentTypeID": 5,
+                      "symbolFull": "AMD",
+                      "stocksIndustryId": 10
+                    }
+                  ]
+                }
+                """);
+            }
+
+            if (pathAndQuery.Contains("market-data/instrument-types", StringComparison.Ordinal))
+            {
+                return JsonResponse("""
+                {
+                  "instrumentTypes": [
+                    {
+                      "instrumentTypeID": 5,
+                      "instrumentTypeDescription": "Stocks"
+                    }
+                  ]
+                }
+                """);
+            }
+
+            if (pathAndQuery.Contains("market-data/stocks-industries", StringComparison.Ordinal))
+            {
+                return JsonResponse("""
+                {
+                  "stocksIndustries": [
+                    {
+                      "industryID": 10,
+                      "industryName": "Technology"
+                    }
+                  ]
+                }
+                """);
+            }
+
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound));
+        }
+
+        private static Task<HttpResponseMessage> JsonResponse(string json) =>
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            });
     }
 }

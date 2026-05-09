@@ -10,5 +10,6 @@
     <Project Path="examples/Demo01.PortfolioHealthCheck/Demo01.PortfolioHealthCheck.csproj" />
     <Project Path="examples/Demo02.PortfolioConcentrationAnalyzer/Demo02.PortfolioConcentrationAnalyzer.csproj" />
     <Project Path="examples/Demo03.WhatIfSimulator/Demo03.WhatIfSimulator.csproj" />
+    <Project Path="examples/Demo04.PortfolioAllocation/Demo04.PortfolioAllocation.csproj" />
   </Folder>
 </Solution>
