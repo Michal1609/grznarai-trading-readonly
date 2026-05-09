@@ -55,6 +55,58 @@ var realized = calculations.CalculateRealizedProfit(history.Trades);
 > or different server-side grouping. Read `pnl.UnrealizedPnL` directly when you need the
 > API-authoritative value.
 
+## Portfolio Allocation
+
+The calculation service can also build portfolio-allocation analytics from open PnL positions:
+
+```csharp
+var instruments = await calculations.GetPortfolioInstrumentAllocationAsync(
+    EToroEnvironment.Real,
+    ct);
+
+var byAssetClass = calculations.CalculatePortfolioAssetClassAllocation(instruments);
+var byIndustry = calculations.CalculatePortfolioIndustryAllocation(instruments);
+```
+
+### Instrument Allocation
+
+`GetPortfolioInstrumentAllocationAsync` fetches PnL for the selected account, includes manual open positions and positions inside copied people/portfolios from PnL `mirrors`, enriches them with market metadata, groups them by instrument, and returns rows sorted by invested amount descending.
+
+Each `PortfolioInstrumentAllocation` row contains:
+
+| Property | Meaning |
+| --- | --- |
+| `InstrumentId` | eToro instrument ID. |
+| `Symbol` | Instrument symbol, or a fallback label when metadata is unavailable. |
+| `AssetClassId` / `AssetClass` | eToro asset class ID and display name when available. |
+| `IndustryId` / `Industry` | eToro stock industry ID and display name when available. |
+| `InvestedAmount` | Sum of open-position `Amount` values for the instrument. |
+| `Share` | `InvestedAmount / total open-position invested amount`, in the `0..1` range. |
+| `ManualAmount` | Invested amount from manually opened positions. |
+| `MirrorAmount` | Invested amount from copy/mirror positions. |
+| `PositionCount` | Number of open PnL positions in the instrument bucket. |
+
+### Group Allocation
+
+`CalculatePortfolioAssetClassAllocation` groups instrument allocation rows by asset class.
+
+`CalculatePortfolioIndustryAllocation` groups instrument allocation rows by stock industry. Instruments without industry metadata are grouped under an `Unknown industry` fallback.
+
+Each `PortfolioGroupAllocation` row contains:
+
+| Property | Meaning |
+| --- | --- |
+| `GroupId` | Asset class or industry ID when metadata provides one. |
+| `GroupName` | Display name of the group. |
+| `InvestedAmount` | Total invested open-position amount in the group. |
+| `Share` | `InvestedAmount / total open-position invested amount`, in the `0..1` range. |
+| `InstrumentCount` | Number of distinct instruments in the group. |
+| `PositionCount` | Number of open PnL positions in the group. |
+
+> **Scope:** Allocation analytics use open-position `Amount` values as invested principal.
+> They do not include cash, pending orders, realized PnL, unrealized PnL, fees, spreads,
+> dividends, or closed positions.
+
 ## Paging Safety
 
 `GetAccountMetricsAsync` reads closed trade history with bounded paging. Use `pageSize` and `maxPages` to control API load and how far the service can scan.

@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <UserSecretsId>GrznarAi.Trading.ReadOnly.Tests.Integration</UserSecretsId>
+    <AssemblyName>Demo04.PortfolioAllocation</AssemblyName>
+    <RootNamespace>Demo04.PortfolioAllocation</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.7" />
+  </ItemGroup>
+
+  <!--
+    When consuming from NuGet instead of project reference, replace with:
+    <PackageReference Include="GrznarAi.Trading.ReadOnly" Version="*" />
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EToro\GrznarAi.Trading.ReadOnly.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

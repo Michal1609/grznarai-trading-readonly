@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.0-alpha.3] - 2026-05-09
+
+### Added
+- Added `Demo04.PortfolioAllocation`, a console example that prints invested allocation by symbol, asset class, and industry, including positions from copied people/portfolio mirrors.
+- Extended `IEToroCalculationService` with portfolio allocation analytics:
+  - `GetPortfolioInstrumentAllocationAsync`
+  - `CalculatePortfolioAssetClassAllocation`
+  - `CalculatePortfolioIndustryAllocation`
+- Added `PortfolioInstrumentAllocation` and `PortfolioGroupAllocation` calculation models.
+
+### Documentation
+- Documented portfolio allocation calculations in English and Czech account-calculation docs.
+
 ## [1.0.0-alpha.2] - 2026-05-07
 
 ### Fixed
