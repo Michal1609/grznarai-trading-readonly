@@ -26,6 +26,7 @@ using GrznarAi.Trading.ReadOnly.Etoro.Models.Common;
 using GrznarAi.Trading.ReadOnly.Etoro.Models.Pnl;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 
 // â”€â”€ 1. Build DI host and register the eToro client â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 //
@@ -72,7 +73,12 @@ try
 {
     pnl = await trading.GetPnlAsync(EToroEnvironment.Real);
 }
-catch (Exception ex)
+catch (HttpRequestException ex)
+{
+    Console.Error.WriteLine($"Error: {ex.Message}");
+    return 1;
+}
+catch (TaskCanceledException ex)
 {
     Console.Error.WriteLine($"Error: {ex.Message}");
     return 1;
@@ -138,7 +144,7 @@ if (topIds.Count > 0)
         foreach (var d in meta.InstrumentDisplayDatas)
             nameById[d.InstrumentId] = d.SymbolFull ?? d.InstrumentDisplayName ?? $"#{d.InstrumentId}";
     }
-    catch
+    catch (Exception ex) when (ex is not OperationCanceledException)
     {
         // Non-critical; falls back to ID display
     }
