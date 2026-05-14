@@ -64,7 +64,7 @@ public sealed partial class DiagnosticCapturingHandler : DelegatingHandler
         catch (Exception ex)
         {
             // Diagnostic capture must never break the caller's request.
-            _logger.LogDebug(ex, "Diagnostic capture failed.");
+            LogCaptureFailed(_logger, ex);
         }
 
         return response;
@@ -151,4 +151,7 @@ public sealed partial class DiagnosticCapturingHandler : DelegatingHandler
         string endpoint,
         int statusCode,
         TimeSpan elapsed);
+
+    [LoggerMessage(EventId = 3002, Level = LogLevel.Debug, Message = "Diagnostic capture failed.")]
+    private static partial void LogCaptureFailed(ILogger logger, Exception ex);
 }
