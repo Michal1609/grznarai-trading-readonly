@@ -5,18 +5,17 @@
     <AssemblyName>GrznarAi.Trading.ReadOnly.Aot.SmokeTest</AssemblyName>
     <RootNamespace>GrznarAi.Trading.ReadOnly.Aot.SmokeTest</RootNamespace>
     <IsPackable>false</IsPackable>
+    <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <!-- CA1716: 'ReadOnly' is a VB.NET keyword; suppressed intentionally — this is a C# library and the name is by design. -->
+    <StripSymbols>true</StripSymbols>
+    <WarningsAsErrors>$(WarningsAsErrors);IL2026;IL3050</WarningsAsErrors>
+    <!-- CA1716: 'ReadOnly' is a VB.NET keyword; suppressed intentionally - this is a C# library and the name is by design. -->
     <NoWarn>$(NoWarn);CA1716</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.7" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\EToro\GrznarAi.Trading.ReadOnly.csproj" />
+    <ProjectReference Include="..\..\src\Core\GrznarAi.Trading.ReadOnly.csproj" />
   </ItemGroup>
 
 </Project>
+

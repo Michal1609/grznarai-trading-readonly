@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>GrznarAi.Trading.ReadOnly.Coinbase.Aot.SmokeTest</RootNamespace>
+    <AssemblyName>GrznarAi.Trading.ReadOnly.Coinbase.Aot.SmokeTest</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <PublishAot>true</PublishAot>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <StripSymbols>true</StripSymbols>
+    <WarningsAsErrors>$(WarningsAsErrors);IL2026;IL3050</WarningsAsErrors>
+    <!-- CA1716: 'ReadOnly' is a VB.NET keyword; suppressed intentionally - this is a C# library and the name is by design. -->
+    <NoWarn>$(NoWarn);CA1716</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Coinbase\GrznarAi.Trading.ReadOnly.Coinbase.csproj" />
+  </ItemGroup>
+
+</Project>

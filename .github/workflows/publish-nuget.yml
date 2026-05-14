@@ -27,7 +27,6 @@ jobs:
     permissions:
       contents: write
     env:
-      PACKAGE_ID: GrznarAi.Trading.ReadOnly
       PACKAGE_VERSION: ${{ inputs.version }}
       NUGET_SOURCE: https://api.nuget.org/v3/index.json
     steps:
@@ -85,20 +84,28 @@ jobs:
             echo "tag_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-          package_id_lower="$(echo "$PACKAGE_ID" | tr '[:upper:]' '[:lower:]')"
+          package_ids=(
+            "GrznarAi.Trading.ReadOnly"
+            "GrznarAi.Trading.ReadOnly.Etoro"
+            "GrznarAi.Trading.ReadOnly.Coinbase"
+          )
           version_lower="$(echo "$PACKAGE_VERSION" | tr '[:upper:]' '[:lower:]')"
-          package_url="https://api.nuget.org/v3-flatcontainer/$package_id_lower/$version_lower/$package_id_lower.$version_lower.nupkg"
-          status_code="$(curl -sS -o /dev/null -w '%{http_code}' "$package_url")"
 
-          if [ "$status_code" = "200" ]; then
-            echo "Package $PACKAGE_ID $PACKAGE_VERSION already exists on NuGet.org."
-            exit 1
-          fi
+          for package_id in "${package_ids[@]}"; do
+            package_id_lower="$(echo "$package_id" | tr '[:upper:]' '[:lower:]')"
+            package_url="https://api.nuget.org/v3-flatcontainer/$package_id_lower/$version_lower/$package_id_lower.$version_lower.nupkg"
+            status_code="$(curl -sS -o /dev/null -w '%{http_code}' "$package_url")"
 
-          if [ "$status_code" != "404" ]; then
-            echo "NuGet availability check returned unexpected HTTP status $status_code."
-            exit 1
-          fi
+            if [ "$status_code" = "200" ]; then
+              echo "Package $package_id $PACKAGE_VERSION already exists on NuGet.org."
+              exit 1
+            fi
+
+            if [ "$status_code" != "404" ]; then
+              echo "NuGet availability check for $package_id returned unexpected HTTP status $status_code."
+              exit 1
+            fi
+          done
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
@@ -123,18 +130,85 @@ jobs:
         run: dotnet test GrznarAi.Trading.ReadOnly.slnx --configuration Release --no-build
 
       - name: Pack
-        run: dotnet pack src/EToro/GrznarAi.Trading.ReadOnly.csproj --configuration Release --no-build --output artifacts/packages /p:Version="$PACKAGE_VERSION" /p:PackageVersion="$PACKAGE_VERSION"
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p artifacts/packages
+          projects=(
+            "src/Core/GrznarAi.Trading.ReadOnly.csproj"
+            "src/Etoro/GrznarAi.Trading.ReadOnly.Etoro.csproj"
+            "src/Coinbase/GrznarAi.Trading.ReadOnly.Coinbase.csproj"
+          )
+
+          for project in "${projects[@]}"; do
+            dotnet pack "$project" \
+              --configuration Release \
+              --no-build \
+              --output artifacts/packages \
+              /p:Version="$PACKAGE_VERSION" \
+              /p:PackageVersion="$PACKAGE_VERSION"
+          done
 
       - name: Validate package output
         shell: bash
         run: |
           set -euo pipefail
 
-          expected_nupkg="artifacts/packages/$PACKAGE_ID.$PACKAGE_VERSION.nupkg"
-          expected_snupkg="artifacts/packages/$PACKAGE_ID.$PACKAGE_VERSION.snupkg"
+          package_ids=(
+            "GrznarAi.Trading.ReadOnly"
+            "GrznarAi.Trading.ReadOnly.Etoro"
+            "GrznarAi.Trading.ReadOnly.Coinbase"
+          )
 
-          test -f "$expected_nupkg"
-          test -f "$expected_snupkg"
+          for package_id in "${package_ids[@]}"; do
+            test -f "artifacts/packages/$package_id.$PACKAGE_VERSION.nupkg"
+            test -f "artifacts/packages/$package_id.$PACKAGE_VERSION.snupkg"
+          done
+
+      - name: Validate package contents
+        shell: python
+        run: |
+          import sys
+          import zipfile
+          from pathlib import Path
+
+          version = "${{ inputs.version }}"
+          packages = {
+              "GrznarAi.Trading.ReadOnly": {
+                  "must": ["lib/net9.0/GrznarAi.Trading.ReadOnly.dll"],
+                  "must_not": [
+                      "lib/net9.0/GrznarAi.Trading.ReadOnly.Etoro.dll",
+                      "lib/net9.0/GrznarAi.Trading.ReadOnly.Coinbase.dll",
+                  ],
+              },
+              "GrznarAi.Trading.ReadOnly.Etoro": {
+                  "must": ["lib/net9.0/GrznarAi.Trading.ReadOnly.Etoro.dll"],
+                  "must_not": ["lib/net9.0/GrznarAi.Trading.ReadOnly.Coinbase.dll"],
+              },
+              "GrznarAi.Trading.ReadOnly.Coinbase": {
+                  "must": ["lib/net9.0/GrznarAi.Trading.ReadOnly.Coinbase.dll"],
+                  "must_not": ["lib/net9.0/GrznarAi.Trading.ReadOnly.Etoro.dll"],
+              },
+          }
+
+          errors = []
+          for package_id, rules in packages.items():
+              package_path = Path("artifacts/packages") / f"{package_id}.{version}.nupkg"
+              with zipfile.ZipFile(package_path) as package:
+                  names = set(package.namelist())
+
+              for required in rules["must"]:
+                  if required not in names:
+                      errors.append(f"{package_path.name} is missing {required}.")
+
+              for forbidden in rules["must_not"]:
+                  if forbidden in names:
+                      errors.append(f"{package_path.name} unexpectedly contains {forbidden}.")
+
+          if errors:
+              print("\n".join(errors), file=sys.stderr)
+              sys.exit(1)
 
       - name: Extract release notes
         shell: bash

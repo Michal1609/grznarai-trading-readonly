@@ -33,7 +33,7 @@ Integration tests (`[Category("Integration")]`) require real eToro credentials a
 ## Code style
 
 - Follow existing conventions (`.editorconfig` enforces most rules).
-- `ConfigureAwait(false)` on every `await` in library code (`src/EToro/` — the directory name is kept as-is).
+- `ConfigureAwait(false)` on every `await` in library code (`src/Etoro/` and `src/Coinbase/`).
 - No comments that explain *what* the code does — only *why* when non-obvious.
 - Prefer `decimal` for all monetary values; never `double`/`float`.
 

@@ -1,56 +1,45 @@
-# Dokumentace
+# GrznarAi Trading Library — Dokumentace
 
-Česká dokumentace pro eToro .NET client.
+Tento repozitář obsahuje .NET klienty pro různé obchodní platformy.
 
-## ⚠️ Upozornění
+## Core
 
-Tento projekt **není nijak spojen s eToro, není jím podporován ani schválen**.
+Sdilena infrastruktura pro vsechny platformni klienty.
 
-Software je poskytován **výhradně pro informační a vzdělávací účely**.
+- [Prehled](core/index.md)
+- [Diagnostika](core/diagnostics.md)
+- [Konfigurace](core/configuration.md)
+- [Rate limiting](core/rate-limiting.md)
+- [Osetreni chyb](core/error-handling.md)
 
-- **Neposkytuje finanční poradenství.**
-- **Nesmí být jediným podkladem pro obchodní rozhodnutí.**
-- Získaná data mohou být **nepřesná, zpožděná nebo neúplná**.
-- Knihovna v současnosti poskytuje pouze **read-only** koncové body.
-  Zápisové operace (POST/PUT/DELETE) přijdou později; jejich použití je
-  na vlastní riziko uživatele.
+Balicek: `GrznarAi.Trading.ReadOnly`
 
-Autor a přispěvatelé **odmítají veškerou odpovědnost** za jakékoli přímé,
-nepřímé, vedlejší, následné nebo sankční škody vzniklé v souvislosti
-s používáním tohoto softwaru, zejména za finanční ztráty, propasené obchody,
-nesprávné výpočty, výpadky, ztrátu dat či porušení podmínek eToro.
-Software používejte výhradně na vlastní nebezpečí.
+## eToro
 
-- [Začínáme](getting-started.md)
-- [Konfigurace](configuration.md)
-- [API reference](api-reference.md)
-- [Error handling](error-handling.md)
-- [Rate limiting a retry](rate-limiting.md)
-- [Výpočty účtu](account-calculations.md)
-- [Testování a přispívání](testing-and-contributing.md)
-- [CI/CD pipeliny](ci-cd.md)
+Read-only .NET klient pro obchodní platformu eToro.
 
-Hlavní balíček: `GrznarAi.Trading.ReadOnly`
+- [Začínáme](etoro/getting-started.md)
+- [Konfigurace](etoro/configuration.md)
+- [API reference](etoro/api-reference.md)
+- [Ošetření chyb](etoro/error-handling.md)
+- [Rate limiting](etoro/rate-limiting.md)
+- [Výpočty účtu](etoro/account-calculations.md)
+- [Omezení API](etoro/api-limitations.md)
+- [Testování a přispívání](etoro/testing-and-contributing.md)
+- [CI/CD pipeline](etoro/ci-cd.md)
 
-Hlavní služby:
+Balíček: `GrznarAi.Trading.ReadOnly.Etoro`
 
-- `IEToroClient`
-- `IEToroCalculationService`
+## Coinbase
 
-Hlavní registrační metoda:
+.NET klient pro Coinbase Advanced Trade API.
 
-```csharp
-builder.Services.AddEToro(builder.Configuration);
-```
+- [Začínáme](coinbase/getting-started.md)
+- [Konfigurace](coinbase/configuration.md)
+- [API reference](coinbase/api-reference.md)
+- [Ošetření chyb](coinbase/error-handling.md)
+- [Rate limiting](coinbase/rate-limiting.md)
+- [Testování a přispívání](coinbase/testing-and-contributing.md)
+- [CI/CD pipeline](coinbase/ci-cd.md)
 
-## Budoucí zápisové endpointy
-
-Před přidáním POST, PUT nebo DELETE endpointů do veřejného API:
-
-- Každý zápisový požadavek bude vyžadovat idempotency key.
-- `RetryNonIdempotentRequests` zůstane ve výchozím stavu `false`; retry zápisů musí být výslovný.
-- Zápisové operace budou mít per-method rate limit oddělený od čtecích limitů.
-- Výpočetní helpery nebudou automaticky zadávat obchody podle heuristik.
-- Samostatné rozhraní pro objednávky zůstane oddělené od read rozhraní.
-- Chyby zápisu budou mít vlastní typy výjimek s broker-side error kódy.
-- Každý pokus o zápis bude mít audit-log hook s redigovaným payloadem.
+Balíček: `GrznarAi.Trading.ReadOnly.Coinbase`

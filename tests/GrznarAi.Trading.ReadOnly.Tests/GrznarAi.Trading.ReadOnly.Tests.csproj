@@ -4,17 +4,11 @@
     <AssemblyName>GrznarAi.Trading.ReadOnly.Tests</AssemblyName>
     <RootNamespace>GrznarAi.Trading.ReadOnly.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
-    <UserSecretsId>GrznarAi.Trading.ReadOnly.Tests.Integration</UserSecretsId>
-    <NoWarn>$(NoWarn);CA1305;CA1826;CA1859;CA1861</NoWarn>
-    <!-- CA1716: 'ReadOnly' is a VB.NET keyword; suppressed intentionally — this is a C# library and the name is by design. -->
-    <NoWarn>$(NoWarn);CA1716</NoWarn>
+    <NoWarn>$(NoWarn);CA1305;CA1716;CA1859;CA1861</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
     <PackageReference Include="NUnit" Version="4.5.1" />
     <PackageReference Include="NUnit.Analyzers" Version="4.13.0" />
@@ -26,16 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EToro\GrznarAi.Trading.ReadOnly.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="appsettings.test.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="appsettings.test.example.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\..\src\Core\GrznarAi.Trading.ReadOnly.csproj" />
   </ItemGroup>
 
 </Project>
+
