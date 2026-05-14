@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>GrznarAi.Trading.ReadOnly.Coinbase</RootNamespace>
+    <AssemblyName>GrznarAi.Trading.ReadOnly.Coinbase</AssemblyName>
+    <PackageId>GrznarAi.Trading.ReadOnly.Coinbase</PackageId>
+    <Title>GrznarAi Trading ReadOnly - Coinbase</Title>
+    <Description>Read-only typed .NET client for Coinbase Advanced Trade APIs. Depends on GrznarAi.Trading.ReadOnly Core infrastructure.</Description>
+    <PackageTags>trading;readonly;api;client;dotnet;coinbase</PackageTags>
+    <PackageReadmeFile>README.nuget.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>alpha.4</VersionSuffix>
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\..\CHANGELOG.md'))</PackageReleaseNotes>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <LangVersion>latest</LangVersion>
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
+    <!-- CA1716: 'ReadOnly' is a VB.NET keyword; suppressed intentionally — this is a C# library and the name is by design. -->
+    <!-- CA1720: Coinbase's public enum tokens intentionally use domain names Long/Short. -->
+    <NoWarn>$(NoWarn);CA1716;CA1720</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="GrznarAi.Trading.ReadOnly.Coinbase.Tests" />
+    <InternalsVisibleTo Include="GrznarAi.Trading.ReadOnly.Coinbase.Aot.SmokeTest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\GrznarAi.Trading.ReadOnly.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.1" />
+    <PackageReference Include="System.Threading.RateLimiting" Version="10.0.7" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.203" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.nuget.md" Pack="true" PackagePath="README.nuget.md" />
+    <None Include="..\..\assets\nuget\Coinbase.png" Pack="true" PackagePath="icon.png" />
+  </ItemGroup>
+
+</Project>

@@ -10,7 +10,7 @@ Use one of these mechanisms instead:
 - Environment variables such as `EToroOptions__ApiKey` and `EToroOptions__UserKey`.
 - CI or production secret stores for deployed applications.
 
-`appsettings.example.json` and `tests/GrznarAi.Trading.ReadOnly.Tests/appsettings.test.example.json` contain dummy values only.
+`appsettings.example.json` and `tests/GrznarAi.Trading.ReadOnly.Etoro.Tests/appsettings.test.example.json` contain dummy values only.
 
 ## Reporting
 

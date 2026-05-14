@@ -58,13 +58,110 @@ jobs:
           name: test-results-${{ matrix.os }}
           path: "**/*.trx"
 
+      - name: Install NativeAOT prerequisites
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends clang zlib1g-dev
+
       - name: NativeAOT smoke publish
         if: matrix.os == 'ubuntu-latest'
-        run: dotnet publish tests/GrznarAi.Trading.ReadOnly.Aot.SmokeTest/GrznarAi.Trading.ReadOnly.Aot.SmokeTest.csproj --configuration Release --runtime linux-x64 --self-contained true /p:PublishAot=true /p:IlcTreatWarningsAsErrors=true -warnaserror:IL2026,IL2104,IL3050
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          projects=(
+            "tests/GrznarAi.Trading.ReadOnly.Aot.SmokeTest/GrznarAi.Trading.ReadOnly.Aot.SmokeTest.csproj"
+            "tests/GrznarAi.Trading.ReadOnly.Etoro.Aot.SmokeTest/GrznarAi.Trading.ReadOnly.Etoro.Aot.SmokeTest.csproj"
+            "tests/GrznarAi.Trading.ReadOnly.Coinbase.Aot.SmokeTest/GrznarAi.Trading.ReadOnly.Coinbase.Aot.SmokeTest.csproj"
+          )
+
+          for project in "${projects[@]}"; do
+            dotnet publish "$project" \
+              --configuration Release \
+              --runtime linux-x64 \
+              --self-contained true \
+              -warnaserror:IL2026,IL2104,IL3050
+          done
 
       - name: Pack
         if: matrix.os == 'ubuntu-latest'
-        run: dotnet pack src/EToro/GrznarAi.Trading.ReadOnly.csproj --configuration Release --no-build --output artifacts/packages
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p artifacts/packages
+          projects=(
+            "src/Core/GrznarAi.Trading.ReadOnly.csproj"
+            "src/Etoro/GrznarAi.Trading.ReadOnly.Etoro.csproj"
+            "src/Coinbase/GrznarAi.Trading.ReadOnly.Coinbase.csproj"
+          )
+
+          for project in "${projects[@]}"; do
+            dotnet pack "$project" --configuration Release --no-build --output artifacts/packages
+          done
+
+      - name: Validate package contents
+        if: matrix.os == 'ubuntu-latest'
+        shell: python
+        run: |
+          import sys
+          import zipfile
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          packages = {
+              "GrznarAi.Trading.ReadOnly": {
+                  "must": ["lib/net9.0/GrznarAi.Trading.ReadOnly.dll"],
+                  "must_not": [
+                      "lib/net9.0/GrznarAi.Trading.ReadOnly.Etoro.dll",
+                      "lib/net9.0/GrznarAi.Trading.ReadOnly.Coinbase.dll",
+                  ],
+              },
+              "GrznarAi.Trading.ReadOnly.Etoro": {
+                  "must": ["lib/net9.0/GrznarAi.Trading.ReadOnly.Etoro.dll"],
+                  "must_not": ["lib/net9.0/GrznarAi.Trading.ReadOnly.Coinbase.dll"],
+              },
+              "GrznarAi.Trading.ReadOnly.Coinbase": {
+                  "must": ["lib/net9.0/GrznarAi.Trading.ReadOnly.Coinbase.dll"],
+                  "must_not": ["lib/net9.0/GrznarAi.Trading.ReadOnly.Etoro.dll"],
+              },
+          }
+
+          package_dir = Path("artifacts/packages")
+          errors = []
+          for package_id, rules in packages.items():
+              matches = []
+              for candidate in package_dir.glob("*.nupkg"):
+                  with zipfile.ZipFile(candidate) as package:
+                      nuspec_name = next(name for name in package.namelist() if name.endswith(".nuspec"))
+                      nuspec = ET.fromstring(package.read(nuspec_name))
+                      metadata = next((element for element in nuspec.iter() if element.tag.endswith("metadata")), None)
+                      package_id_element = next(
+                          (element for element in metadata if element.tag.endswith("id")),
+                          None,
+                      ) if metadata is not None else None
+                      if package_id_element is not None and package_id_element.text == package_id:
+                          matches.append(candidate)
+
+              if len(matches) != 1:
+                  errors.append(f"Expected exactly one {package_id} nupkg, found {len(matches)}.")
+                  continue
+
+              with zipfile.ZipFile(matches[0]) as package:
+                  names = set(package.namelist())
+
+              for required in rules["must"]:
+                  if required not in names:
+                      errors.append(f"{matches[0].name} is missing {required}.")
+
+              for forbidden in rules["must_not"]:
+                  if forbidden in names:
+                      errors.append(f"{matches[0].name} unexpectedly contains {forbidden}.")
+
+          if errors:
+              print("\n".join(errors), file=sys.stderr)
+              sys.exit(1)
 
       - name: Upload NuGet artifacts
         if: matrix.os == 'ubuntu-latest'

@@ -1,15 +1,22 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/EToro/GrznarAi.Trading.ReadOnly.csproj" />
+    <Project Path="src/Core/GrznarAi.Trading.ReadOnly.csproj" />
+    <Project Path="src/Etoro/GrznarAi.Trading.ReadOnly.Etoro.csproj" />
+    <Project Path="src/Coinbase/GrznarAi.Trading.ReadOnly.Coinbase.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/GrznarAi.Trading.ReadOnly.Aot.SmokeTest/GrznarAi.Trading.ReadOnly.Aot.SmokeTest.csproj" />
     <Project Path="tests/GrznarAi.Trading.ReadOnly.Tests/GrznarAi.Trading.ReadOnly.Tests.csproj" />
+    <Project Path="tests/GrznarAi.Trading.ReadOnly.Aot.SmokeTest/GrznarAi.Trading.ReadOnly.Aot.SmokeTest.csproj" />
+    <Project Path="tests/GrznarAi.Trading.ReadOnly.Etoro.Aot.SmokeTest/GrznarAi.Trading.ReadOnly.Etoro.Aot.SmokeTest.csproj" />
+    <Project Path="tests/GrznarAi.Trading.ReadOnly.Etoro.Tests/GrznarAi.Trading.ReadOnly.Etoro.Tests.csproj" />
+    <Project Path="tests/GrznarAi.Trading.ReadOnly.Coinbase.Tests/GrznarAi.Trading.ReadOnly.Coinbase.Tests.csproj" />
+    <Project Path="tests/GrznarAi.Trading.ReadOnly.Coinbase.Aot.SmokeTest/GrznarAi.Trading.ReadOnly.Coinbase.Aot.SmokeTest.csproj" />
   </Folder>
   <Folder Name="/examples/">
-    <Project Path="examples/Demo01.PortfolioHealthCheck/Demo01.PortfolioHealthCheck.csproj" />
-    <Project Path="examples/Demo02.PortfolioConcentrationAnalyzer/Demo02.PortfolioConcentrationAnalyzer.csproj" />
-    <Project Path="examples/Demo03.WhatIfSimulator/Demo03.WhatIfSimulator.csproj" />
-    <Project Path="examples/Demo04.PortfolioAllocation/Demo04.PortfolioAllocation.csproj" />
+    <Project Path="examples/eToro/Demo01.PortfolioHealthCheck/Demo01.PortfolioHealthCheck.csproj" />
+    <Project Path="examples/eToro/Demo02.PortfolioConcentrationAnalyzer/Demo02.PortfolioConcentrationAnalyzer.csproj" />
+    <Project Path="examples/eToro/Demo03.WhatIfSimulator/Demo03.WhatIfSimulator.csproj" />
+    <Project Path="examples/eToro/Demo04.PortfolioAllocation/Demo04.PortfolioAllocation.csproj" />
+    <Project Path="examples/Coinbase/Demo01.PortfolioBreakdown/Demo01.PortfolioBreakdown.csproj" />
   </Folder>
 </Solution>

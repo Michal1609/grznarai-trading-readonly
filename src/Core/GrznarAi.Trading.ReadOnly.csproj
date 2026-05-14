@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>GrznarAi.Trading.ReadOnly</AssemblyName>
+    <RootNamespace>GrznarAi.Trading.ReadOnly</RootNamespace>
+    <PackageId>GrznarAi.Trading.ReadOnly</PackageId>
+    <Title>GrznarAi Trading ReadOnly — Core</Title>
+    <Description>Shared infrastructure for GrznarAi.Trading.ReadOnly.* platform clients. Provides HTTP pipeline handlers, rate limiting, resilience, diagnostics, and base exception types.</Description>
+    <PackageTags>trading;readonly;api;client;dotnet;core;rate-limiting;diagnostics</PackageTags>
+    <PackageReadmeFile>README.nuget.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>alpha.4</VersionSuffix>
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\..\CHANGELOG.md'))</PackageReleaseNotes>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
+    <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
+    <!-- CA1716: 'ReadOnly' is a VB.NET keyword; suppressed intentionally — this is a C# library and the name is by design. -->
+    <NoWarn>$(NoWarn);CA1716</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="GrznarAi.Trading.ReadOnly.Tests" />
+    <InternalsVisibleTo Include="GrznarAi.Trading.ReadOnly.Etoro.Tests" />
+    <InternalsVisibleTo Include="GrznarAi.Trading.ReadOnly.Coinbase.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.7" />
+    <PackageReference Include="System.Threading.RateLimiting" Version="10.0.7" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.203" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.nuget.md" Pack="true" PackagePath="README.nuget.md" />
+    <None Include="..\..\assets\nuget\MG mark.png" Pack="true" PackagePath="icon.png" />
+  </ItemGroup>
+
+</Project>
