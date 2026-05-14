@@ -128,9 +128,11 @@ public class PortfolioBreakdownDeserializationTests
         var json = """{"breakdown":{"portfolio":{"uuid":"x"}}}""";
         var result = JsonSerializer.Deserialize<GetPortfolioBreakdownResponse>(json);
 
-        Assert.NotNull(result?.Breakdown);
-        Assert.Null(result!.Breakdown!.SpotPositions);
-        Assert.Null(result.Breakdown.PerpPositions);
-        Assert.Null(result.Breakdown.FuturesPositions);
+        Assert.NotNull(result);
+        var breakdown = result!.Breakdown;
+        Assert.NotNull(breakdown);
+        Assert.Null(breakdown!.SpotPositions);
+        Assert.Null(breakdown.PerpPositions);
+        Assert.Null(breakdown.FuturesPositions);
     }
 }

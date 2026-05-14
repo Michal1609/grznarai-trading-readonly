@@ -57,9 +57,14 @@ public sealed partial class DiagnosticCapturingHandler : DelegatingHandler
             if (_options.LogToILogger && _logger.IsEnabled(LogLevel.Debug))
                 LogSnapshot(_logger, snapshot.Method, snapshot.RequestUri?.AbsolutePath ?? "", snapshot.StatusCode, elapsed);
         }
-        catch
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
         {
             // Diagnostic capture must never break the caller's request.
+            _logger.LogDebug(ex, "Diagnostic capture failed.");
         }
 
         return response;

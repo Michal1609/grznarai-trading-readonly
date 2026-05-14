@@ -20,6 +20,7 @@
 using GrznarAi.Trading.ReadOnly.Coinbase;
 using GrznarAi.Trading.ReadOnly.Coinbase.Client;
 using GrznarAi.Trading.ReadOnly.Coinbase.Models.Portfolios;
+using GrznarAi.Trading.ReadOnly.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -58,7 +59,12 @@ try
 {
     list = await portfolios.ListPortfoliosAsync();
 }
-catch (Exception ex)
+catch (OperationCanceledException ex)
+{
+    Console.Error.WriteLine($"Listing portfolios was canceled: {ex.Message}");
+    return 1;
+}
+catch (TradingApiException ex)
 {
     Console.Error.WriteLine($"Error listing portfolios: {ex.Message}");
     return 1;
@@ -80,7 +86,12 @@ try
 {
     response = await portfolios.GetPortfolioBreakdownAsync(portfolio.Uuid, currency: "USD");
 }
-catch (Exception ex)
+catch (OperationCanceledException ex)
+{
+    Console.Error.WriteLine($"Fetching breakdown was canceled: {ex.Message}");
+    return 1;
+}
+catch (TradingApiException ex)
 {
     Console.Error.WriteLine($"Error fetching breakdown: {ex.Message}");
     return 1;
@@ -184,10 +195,9 @@ static void PrintCredentialDiagnostics(IConfiguration configuration)
     if (!string.IsNullOrEmpty(userSecretsId))
     {
         var appData = Environment.GetEnvironmentVariable("APPDATA");
-        if (!string.IsNullOrEmpty(appData))
-            secretsPath = Path.Combine(appData, "Microsoft", "UserSecrets", userSecretsId, "secrets.json");
-        else
-            secretsPath = Path.Combine(
+        secretsPath = !string.IsNullOrEmpty(appData)
+            ? Path.Join(appData, "Microsoft", "UserSecrets", userSecretsId, "secrets.json")
+            : Path.Join(
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 ".microsoft", "usersecrets", userSecretsId, "secrets.json");
     }
