@@ -6,6 +6,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.0-alpha.5] - 2026-05-17
+
+### Added
+- Completed Coinbase Advanced Trade API read-only surface — all documented GET endpoints are now implemented as typed methods.
+- New client interfaces split by domain: `ICoinbaseConvertClient`, `ICoinbaseDataApiClient`, `ICoinbaseFeesClient`, `ICoinbaseFuturesClient`, `ICoinbaseOrdersClient`, `ICoinbasePaymentMethodsClient`, `ICoinbasePerpetualClient`, `ICoinbaseProductsClient`, `ICoinbasePublicClient`. The facade `ICoinbaseClient` aggregates them all.
+- Accounts: `ListAccountsAsync` overload accepting `ListAccountsRequest`.
+- Portfolios: `ListPortfoliosAsync` overload accepting `ListPortfoliosRequest`.
+- Orders endpoints: `GetOrderAsync`, `ListOrdersAsync`, `ListFillsAsync`.
+- Products endpoints: `ListProductsAsync`, `GetProductAsync`, `GetProductBookAsync`, `GetBestBidAskAsync`, `GetMarketTradesAsync`, `GetProductCandlesAsync`.
+- Public (unauthenticated) endpoints: `GetServerTimeAsync`, `ListPublicProductsAsync`, `GetPublicProductAsync`, `GetPublicProductBookAsync`, `GetPublicProductCandlesAsync`, `GetPublicMarketTradesAsync`.
+- Fees: `GetTransactionSummaryAsync`.
+- Futures: `GetFuturesBalanceSummaryAsync`, `ListFuturesPositionsAsync`, `GetFuturesPositionAsync`, `GetCurrentMarginWindowAsync`, `ListFuturesSweepsAsync`, `GetIntradayMarginSettingAsync`.
+- Perpetuals: `GetPerpetualPortfolioSummaryAsync`, `ListPerpetualPositionsAsync`, `GetPerpetualPositionAsync`, `GetPortfolioBalancesAsync`.
+- Payment Methods: `ListPaymentMethodsAsync`, `GetPaymentMethodAsync`.
+- Convert: `GetConvertTradeAsync`.
+- Data API: `GetApiKeyPermissionsAsync`.
+- Integration test scaffolding for all new clients (skipped without credentials).
+
+### Changed
+- `QueryStringBuilder` improvements to support repeated keys and richer parameter binding for the new endpoints.
+- `CoinbaseJsonContext` extended with all new request/response DTOs for AOT-safe serialization.
+- `ServiceCollectionExtensions` registers all new domain interfaces.
+
+### Fixed
+- `GetServerTimeAsync` no longer fails when Coinbase returns `epochSeconds` / `epochMillis` as JSON strings. Added `Int64StringConverter` / `NullableInt64StringConverter` in Core and applied them to `GetServerTimeResponse`.
+
+### Documentation
+- Documented the full GET method catalogue for the Coinbase client (see API reference). The client is intentionally read-only — no write/trade endpoints are exposed.
+- Noted that usage samples beyond the README are best discovered in the unit and integration tests under `tests/GrznarAi.Trading.ReadOnly.Coinbase.Tests/`.
+
 ## [1.0.0-alpha.4] - 2026-05-14
 
 ### Breaking Changes

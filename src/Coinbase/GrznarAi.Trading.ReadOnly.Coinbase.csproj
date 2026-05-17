@@ -14,7 +14,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>alpha.4</VersionSuffix>
+    <VersionSuffix>alpha.5</VersionSuffix>
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\..\CHANGELOG.md'))</PackageReleaseNotes>
     <EnablePackageValidation>true</EnablePackageValidation>
     <LangVersion>latest</LangVersion>
@@ -24,7 +24,8 @@
     <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
     <!-- CA1716: 'ReadOnly' is a VB.NET keyword; suppressed intentionally — this is a C# library and the name is by design. -->
     <!-- CA1720: Coinbase's public enum tokens intentionally use domain names Long/Short. -->
-    <NoWarn>$(NoWarn);CA1716;CA1720</NoWarn>
+    <!-- CA1711: PortfolioMarginFlags ends with 'Flags' intentionally — it mirrors the Coinbase API field name. -->
+    <NoWarn>$(NoWarn);CA1716;CA1720;CA1711</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

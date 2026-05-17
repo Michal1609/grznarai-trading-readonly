@@ -32,6 +32,54 @@ public class CoinbaseClientPortfoliosTests : IDisposable
         GC.SuppressFinalize(this);
     }
 
+    // ─── ListPortfoliosAsync ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListPortfolios_without_filter_calls_correct_url()
+    {
+        _mock.Expect(HttpMethod.Get, "https://api.coinbase.com/api/v3/brokerage/portfolios")
+            .Respond("application/json", """{"portfolios":[{"uuid":"p1","name":"Default","type":"DEFAULT"}]}""");
+
+        var result = await _client.ListPortfoliosAsync();
+
+        Assert.NotNull(result.Portfolios);
+        Assert.Single(result.Portfolios!);
+        Assert.Equal("p1", result.Portfolios![0].Uuid);
+        _mock.VerifyNoOutstandingExpectation();
+    }
+
+    [Fact]
+    public async Task ListPortfolios_with_type_filter_appends_query()
+    {
+        _mock.Expect(HttpMethod.Get, "https://api.coinbase.com/api/v3/brokerage/portfolios?portfolio_type=CONSUMER")
+            .Respond("application/json", """{"portfolios":[]}""");
+
+        var result = await _client.ListPortfoliosAsync(portfolioType: "CONSUMER");
+
+        Assert.NotNull(result.Portfolios);
+        _mock.VerifyNoOutstandingExpectation();
+    }
+
+    [Fact]
+    public async Task ListPortfolios_request_overload_delegates()
+    {
+        _mock.Expect(HttpMethod.Get, "https://api.coinbase.com/api/v3/brokerage/portfolios?portfolio_type=INTX")
+            .Respond("application/json", """{"portfolios":[]}""");
+
+        await _client.ListPortfoliosAsync(new ListPortfoliosRequest { PortfolioType = "INTX" });
+
+        _mock.VerifyNoOutstandingExpectation();
+    }
+
+    [Fact]
+    public async Task ListPortfolios_request_overload_rejects_null()
+    {
+        await Assert.ThrowsAsync<ArgumentNullException>(
+            () => _client.ListPortfoliosAsync((ListPortfoliosRequest)null!));
+    }
+
+    // ─── GetPortfolioBreakdownAsync ──────────────────────────────────────────
+
     [Fact]
     public async Task GetPortfolioBreakdown_builds_correct_path_and_query()
     {

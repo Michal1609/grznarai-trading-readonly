@@ -118,6 +118,16 @@ public sealed partial class CoinbaseClient : ICoinbaseClient
         var path = requestUri.IsAbsoluteUri ? requestUri.AbsolutePath : requestUri.OriginalString;
         path = PortfolioPathRegex().Replace(path, "/portfolios/{uuid}");
         path = AccountPathRegex().Replace(path, "/accounts/{uuid}");
+        path = ConvertTradePathRegex().Replace(path, "/convert/trade/{trade_id}");
+        path = OrderPathRegex().Replace(path, "/orders/historical/{order_id}");
+        path = PaymentMethodPathRegex().Replace(path, "/payment_methods/{payment_method_id}");
+        path = IntxPortfolioPathRegex().Replace(path, "/intx/portfolio/{portfolio_uuid}");
+        path = IntxBalancesPathRegex().Replace(path, "/intx/balances/{portfolio_uuid}");
+        path = IntxPositionPathRegex().Replace(path, "/intx/positions/{portfolio_uuid}/{symbol}");
+        path = IntxPositionsPathRegex().Replace(path, "/intx/positions/{portfolio_uuid}");
+        path = ProductCandlesPathRegex().Replace(path, "/products/{product_id}/candles");
+        path = ProductTickerPathRegex().Replace(path, "/products/{product_id}/ticker");
+        path = ProductPathRegex().Replace(path, "/products/{product_id}");
         return path;
     }
 
@@ -194,6 +204,56 @@ public sealed partial class CoinbaseClient : ICoinbaseClient
         @"/accounts/[^/?#]+",
         RegexOptions.CultureInvariant)]
     private static partial Regex AccountPathRegex();
+
+    [GeneratedRegex(
+        @"/convert/trade/[^/?#]+",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex ConvertTradePathRegex();
+
+    [GeneratedRegex(
+        @"/orders/historical/(?!batch|fills)[^/?#]+",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex OrderPathRegex();
+
+    [GeneratedRegex(
+        @"/payment_methods/[^/?#]+",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex PaymentMethodPathRegex();
+
+    [GeneratedRegex(
+        @"/intx/portfolio/[^/?#]+",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex IntxPortfolioPathRegex();
+
+    [GeneratedRegex(
+        @"/intx/balances/[^/?#]+",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex IntxBalancesPathRegex();
+
+    [GeneratedRegex(
+        @"/intx/positions/[^/?#]+/[^/?#]+",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex IntxPositionPathRegex();
+
+    [GeneratedRegex(
+        @"/intx/positions/[^/?#]+",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex IntxPositionsPathRegex();
+
+    [GeneratedRegex(
+        @"/products/[^/?#]+/candles",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex ProductCandlesPathRegex();
+
+    [GeneratedRegex(
+        @"/products/[^/?#]+/ticker",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex ProductTickerPathRegex();
+
+    [GeneratedRegex(
+        @"/products/[^/?#]+",
+        RegexOptions.CultureInvariant)]
+    private static partial Regex ProductPathRegex();
 
     [LoggerMessage(
         EventId = 4001,

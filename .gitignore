@@ -15,6 +15,7 @@ coverage/
 *.user
 *.suo
 *.rsuser
+*.lscache
 
 # Local assistant/tooling state
 .claude/
