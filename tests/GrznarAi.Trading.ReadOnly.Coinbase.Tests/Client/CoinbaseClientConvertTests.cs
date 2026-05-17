@@ -286,7 +286,7 @@ public class CoinbaseClientConvertTests : IDisposable
     public async Task GetConvertTrade_request_overload_throws_on_null_request()
     {
         await Assert.ThrowsAsync<ArgumentNullException>(
-            () => _client.GetConvertTradeAsync((GetConvertTradeRequest)null!));
+            () => _client.GetConvertTradeAsync(null!));
     }
 
     [Fact]

@@ -76,7 +76,7 @@ public class CoinbaseClientPublicTests : IDisposable
     public async Task GetPublicMarketTrades_request_overload_rejects_null()
     {
         await Assert.ThrowsAsync<ArgumentNullException>(
-            () => _client.GetPublicMarketTradesAsync((GetPublicMarketTradesRequest)null!));
+            () => _client.GetPublicMarketTradesAsync(null!));
     }
 
     [Fact]
@@ -266,7 +266,7 @@ public class CoinbaseClientPublicTests : IDisposable
     public async Task GetPublicProductCandles_request_overload_rejects_null()
     {
         await Assert.ThrowsAsync<ArgumentNullException>(
-            () => _client.GetPublicProductCandlesAsync((GetPublicProductCandlesRequest)null!));
+            () => _client.GetPublicProductCandlesAsync(null!));
     }
 
     [Fact]
