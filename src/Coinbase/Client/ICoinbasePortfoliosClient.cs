@@ -6,22 +6,31 @@ public interface ICoinbasePortfoliosClient
 {
     /// <summary>
     /// List all portfolios visible to the authenticated user.
-    /// <br/>CZ: VrĂˇtĂ­ vĹˇechna portfolia viditelnĂˇ pro pĹ™ihlĂˇĹˇenĂ©ho uĹľivatele.
     /// </summary>
+    /// <param name="portfolioType">
+    /// Optional filter. Known values: <c>DEFAULT</c>, <c>CONSUMER</c>, <c>INTX</c>.
+    /// </param>
+    /// <param name="ct">Cancellation token.</param>
     Task<ListPortfoliosResponse> ListPortfoliosAsync(string? portfolioType = null, CancellationToken ct = default);
 
     /// <summary>
-    /// Get a detailed breakdown of a portfolio: balances, spot/perp/futures positions.
-    /// <br/>CZ: VrĂˇtĂ­ detailnĂ­ rozpad portfolia: zĹŻstatky, spot/perp/futures pozice.
+    /// List all portfolios visible to the authenticated user using a request object.
     /// </summary>
+    Task<ListPortfoliosResponse> ListPortfoliosAsync(ListPortfoliosRequest request, CancellationToken ct = default);
+
+    /// <summary>
+    /// Get a detailed breakdown of a portfolio: balances, spot/perp/futures positions.
+    /// </summary>
+    /// <param name="portfolioUuid">UUID of the portfolio.</param>
+    /// <param name="currency">Optional ISO 4217 currency code for valuation (e.g. <c>USD</c>).</param>
+    /// <param name="ct">Cancellation token.</param>
     Task<GetPortfolioBreakdownResponse> GetPortfolioBreakdownAsync(
         string portfolioUuid,
         string? currency = null,
         CancellationToken ct = default);
 
     /// <summary>
-    /// Request-object overload for <see cref="GetPortfolioBreakdownAsync(string,string?,CancellationToken)"/>.
-    /// <br/>CZ: Varianta s request objektem pro <see cref="GetPortfolioBreakdownAsync(string,string?,CancellationToken)"/>.
+    /// Get a detailed breakdown of a portfolio using a request object.
     /// </summary>
     Task<GetPortfolioBreakdownResponse> GetPortfolioBreakdownAsync(
         GetPortfolioBreakdownRequest request,

@@ -11,8 +11,7 @@ The software is provided **for informational and educational purposes only**.
 - **Not financial advice.**
 - **Must not be the sole basis for trading decisions.**
 - Data returned may be **inaccurate, delayed, or incomplete**.
-- The library currently exposes **read-only** endpoints only.
-  Write operations (POST/PUT/DELETE) may come later; their use is at the user's risk.
+- The library exposes **read-only** endpoints only. **All documented Coinbase Advanced Trade GET endpoints are implemented.** No write/trade operations (place order, cancel, convert commit, etc.) are exposed and there is no roadmap to add them — this package is read-only by design.
 
 The author and contributors **disclaim all liability** for any direct, indirect, incidental,
 consequential, or punitive damages arising from the use of this software, including
@@ -31,9 +30,20 @@ Primary package: `GrznarAi.Trading.ReadOnly.Coinbase`
 
 Primary services:
 
-- `ICoinbaseClient` (facade combining domain interfaces)
+- `ICoinbaseClient` (facade combining all domain interfaces)
 - `ICoinbaseAccountsClient`
 - `ICoinbasePortfoliosClient`
+- `ICoinbaseOrdersClient`
+- `ICoinbaseProductsClient`
+- `ICoinbasePublicClient`
+- `ICoinbaseFeesClient`
+- `ICoinbaseFuturesClient`
+- `ICoinbasePerpetualClient`
+- `ICoinbasePaymentMethodsClient`
+- `ICoinbaseConvertClient`
+- `ICoinbaseDataApiClient`
+
+See the [API reference](api-reference.md) for the full method catalogue. There is no separate examples app per endpoint — the most exhaustive usage samples are the unit and integration tests in `tests/GrznarAi.Trading.ReadOnly.Coinbase.Tests/`.
 
 Registration:
 

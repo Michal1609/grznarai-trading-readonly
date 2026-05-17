@@ -8,7 +8,7 @@ This package family is split into:
 |---|---|
 | `GrznarAi.Trading.ReadOnly` | Shared Core infrastructure. |
 | `GrznarAi.Trading.ReadOnly.Etoro` | eToro public API client. |
-| `GrznarAi.Trading.ReadOnly.Coinbase` | Coinbase Advanced Trade API client. |
+| `GrznarAi.Trading.ReadOnly.Coinbase` | Coinbase Advanced Trade API client. Covers all documented GET endpoints; strictly read-only. |
 
 Starting with `1.0.0-alpha.3`, `GrznarAi.Trading.ReadOnly` no longer contains the eToro client. Install `GrznarAi.Trading.ReadOnly.Etoro` for eToro usage.
 
@@ -40,6 +40,10 @@ builder.Services.AddCoinbaseClient(builder.Configuration);
 ```
 
 Configuration section: `Coinbase`.
+
+The Coinbase client implements every documented GET endpoint across Accounts, Portfolios, Orders, Products, Public market data, Fees, Futures, Perpetuals, Payment Methods, Convert, and Data API. No write/trade operations are exposed — the client is read-only by design.
+
+Usage samples per endpoint live in the test suite (`tests/GrznarAi.Trading.ReadOnly.Coinbase.Tests/Client/*` and `.../Integration/*`). The full method catalogue is in the Coinbase API reference doc linked below.
 
 ## Diagnostics
 

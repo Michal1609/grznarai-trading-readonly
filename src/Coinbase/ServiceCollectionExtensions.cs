@@ -85,7 +85,13 @@ public static class ServiceCollectionExtensions
         // inject a narrower surface (ICoinbaseAccountsClient / ICoinbasePortfoliosClient)
         // without resolving the full facade.
         services.AddTransient<ICoinbaseAccountsClient>(sp => sp.GetRequiredService<ICoinbaseClient>());
+        services.AddTransient<ICoinbaseFuturesClient>(sp => sp.GetRequiredService<ICoinbaseClient>());
+        services.AddTransient<ICoinbaseOrdersClient>(sp => sp.GetRequiredService<ICoinbaseClient>());
+        services.AddTransient<ICoinbasePaymentMethodsClient>(sp => sp.GetRequiredService<ICoinbaseClient>());
+        services.AddTransient<ICoinbasePerpetualClient>(sp => sp.GetRequiredService<ICoinbaseClient>());
         services.AddTransient<ICoinbasePortfoliosClient>(sp => sp.GetRequiredService<ICoinbaseClient>());
+        services.AddTransient<ICoinbaseProductsClient>(sp => sp.GetRequiredService<ICoinbaseClient>());
+        services.AddTransient<ICoinbasePublicClient>(sp => sp.GetRequiredService<ICoinbaseClient>());
 
         return services;
     }

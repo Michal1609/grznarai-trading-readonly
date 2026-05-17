@@ -11,7 +11,7 @@ License: MIT
 |---|---|---|
 | `GrznarAi.Trading.ReadOnly` | `dotnet add package GrznarAi.Trading.ReadOnly` | Shared infrastructure: HTTP handlers, rate limiting, resilience, diagnostics, JSON helpers, base exception types. Usually installed transitively. |
 | `GrznarAi.Trading.ReadOnly.Etoro` | `dotnet add package GrznarAi.Trading.ReadOnly.Etoro` | Read-only typed client for the eToro public API. |
-| `GrznarAi.Trading.ReadOnly.Coinbase` | `dotnet add package GrznarAi.Trading.ReadOnly.Coinbase` | Typed client for Coinbase Advanced Trade API read endpoints. |
+| `GrznarAi.Trading.ReadOnly.Coinbase` | `dotnet add package GrznarAi.Trading.ReadOnly.Coinbase` | Typed client for Coinbase Advanced Trade API. **Covers all documented GET endpoints. Strictly read-only — no write/trade methods are exposed.** |
 
 Starting with `1.0.0-alpha.3`, `GrznarAi.Trading.ReadOnly` is Core only. Existing eToro consumers should install `GrznarAi.Trading.ReadOnly.Etoro`.
 
@@ -100,6 +100,8 @@ Runnable console apps in the `examples/` directory:
 - `Demo01.PortfolioBreakdown` — list accounts and print balances
 
 Each demo reads credentials from `dotnet user-secrets`. See the example's `Program.cs` for setup instructions.
+
+> There is no dedicated example app per Coinbase endpoint. The most complete usage samples are the unit tests under `tests/GrznarAi.Trading.ReadOnly.Coinbase.Tests/Client/` (one file per domain client) and the credential-driven integration tests under `tests/GrznarAi.Trading.ReadOnly.Coinbase.Tests/Integration/`. The full method catalogue is listed in [docs/en/coinbase/api-reference.md](docs/en/coinbase/api-reference.md).
 
 ## Documentation
 

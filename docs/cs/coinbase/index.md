@@ -11,9 +11,7 @@ Software je poskytovĂˇn **vĂ˝hradnÄ› pro informaÄŤnĂ­ a vzdÄ›lĂˇ
 - **Neposkytuje finanÄŤnĂ­ poradenstvĂ­.**
 - **NesmĂ­ bĂ˝t jedinĂ˝m podkladem pro obchodnĂ­ rozhodnutĂ­.**
 - ZĂ­skanĂˇ data mohou bĂ˝t **nepĹ™esnĂˇ, zpoĹľdÄ›nĂˇ nebo neĂşplnĂˇ**.
-- Knihovna v souÄŤasnosti poskytuje pouze **read-only** koncovĂ© body.
-  ZĂˇpisovĂ© operace (POST/PUT/DELETE) pĹ™ijdou pozdÄ›ji; jejich pouĹľitĂ­ je
-  na vlastnĂ­ riziko uĹľivatele.
+- Knihovna poskytuje pouze **read-only** koncové body. **Implementovány jsou všechny dokumentované GET endpointy Coinbase Advanced Trade API.** Zápisové operace (zadání orderu, zrušení, convert commit atd.) nejsou vystaveny a ani se to neplánuje — balíček je read-only záměrně.
 
 Autor a pĹ™ispÄ›vatelĂ© **odmĂ­tajĂ­ veĹˇkerou odpovÄ›dnost** za jakĂ©koli pĹ™Ă­mĂ©,
 nepĹ™Ă­mĂ©, vedlejĹˇĂ­, nĂˇslednĂ© nebo sankÄŤnĂ­ Ĺˇkody vzniklĂ© v souvislosti
@@ -33,9 +31,20 @@ HlavnĂ­ balĂ­ÄŤek: `GrznarAi.Trading.ReadOnly.Coinbase`
 
 HlavnĂ­ sluĹľby:
 
-- `ICoinbaseClient` (facade kombinujĂ­cĂ­ domĂ©novĂˇ rozhranĂ­)
+- `ICoinbaseClient` (facade kombinující všechna doménová rozhraní)
 - `ICoinbaseAccountsClient`
 - `ICoinbasePortfoliosClient`
+- `ICoinbaseOrdersClient`
+- `ICoinbaseProductsClient`
+- `ICoinbasePublicClient`
+- `ICoinbaseFeesClient`
+- `ICoinbaseFuturesClient`
+- `ICoinbasePerpetualClient`
+- `ICoinbasePaymentMethodsClient`
+- `ICoinbaseConvertClient`
+- `ICoinbaseDataApiClient`
+
+Kompletní katalog metod je v [API reference](api-reference.md). Samostatná examples aplikace pro jednotlivé endpointy neexistuje — nejúplnější ukázky použití najdete v unit a integračních testech v `tests/GrznarAi.Trading.ReadOnly.Coinbase.Tests/`.
 
 HlavnĂ­ registraÄŤnĂ­ metoda:
 

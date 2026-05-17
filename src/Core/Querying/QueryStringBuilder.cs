@@ -73,6 +73,21 @@ public sealed class QueryStringBuilder
         return this;
     }
 
+    /// <summary>
+    /// Appends one query-string entry per value (e.g. ?ids=A&amp;ids=B).
+    /// Skips null/whitespace values.
+    /// </summary>
+    public QueryStringBuilder AddRepeated(string name, IEnumerable<string>? values)
+    {
+        if (values is null) return this;
+        foreach (var v in values)
+        {
+            if (!string.IsNullOrWhiteSpace(v))
+                _parts.Add($"{Escape(name)}={Escape(v)}");
+        }
+        return this;
+    }
+
     public override string ToString() => _parts.Count == 0 ? string.Empty : "?" + string.Join("&", _parts);
 
     public static string EscapePathSegment(string value) => Uri.EscapeDataString(value);
