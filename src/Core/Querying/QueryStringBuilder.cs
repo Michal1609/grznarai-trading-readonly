@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Linq;
 
 namespace GrznarAi.Trading.ReadOnly.Querying;
 
@@ -80,11 +81,8 @@ public sealed class QueryStringBuilder
     public QueryStringBuilder AddRepeated(string name, IEnumerable<string>? values)
     {
         if (values is null) return this;
-        foreach (var v in values)
-        {
-            if (!string.IsNullOrWhiteSpace(v))
-                _parts.Add($"{Escape(name)}={Escape(v)}");
-        }
+        foreach (var v in values.Where(v => !string.IsNullOrWhiteSpace(v)))
+            _parts.Add($"{Escape(name)}={Escape(v)}");
         return this;
     }
 

@@ -173,8 +173,9 @@ public class CoinbaseClientOrdersTests : IDisposable
         Assert.Equal("0.001", order.FilledSize);
         Assert.Equal(OrderType.Limit, order.OrderType);
         Assert.True(order.Settled);
-        Assert.NotNull(order.OrderConfiguration?.LimitGtc);
-        Assert.Equal("0.001", order.OrderConfiguration!.LimitGtc!.BaseSize);
+        Assert.NotNull(order.OrderConfiguration);
+        Assert.NotNull(order.OrderConfiguration.LimitGtc);
+        Assert.Equal("0.001", order.OrderConfiguration.LimitGtc.BaseSize);
         Assert.Equal("50000.00", order.OrderConfiguration.LimitGtc.LimitPrice);
         Assert.False(order.OrderConfiguration.LimitGtc.PostOnly);
     }
