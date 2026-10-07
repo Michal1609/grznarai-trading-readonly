@@ -2,7 +2,7 @@
 
 Typed .NET clients for trading platform APIs. The repository is split into a shared Core package and per-platform packages for eToro and Coinbase.
 
-Target framework: `.NET 9`  
+Target framework: `.NET 10`  
 License: MIT
 
 ## Packages

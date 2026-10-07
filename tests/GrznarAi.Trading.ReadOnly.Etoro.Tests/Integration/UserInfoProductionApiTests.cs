@@ -272,10 +272,10 @@ public class UserInfoProductionApiTests
     }
 
     [Test]
-    public void SearchUsers_PageZero_ThrowsArgumentOutOfRange()
+    public async Task SearchUsers_PageZero_ThrowsArgumentOutOfRange()
     {
         // Page=0 je neplatnĂ© â€” validace v klientovi (musĂ­ bĂ˝t >= 1)
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             _client.SearchUsersAsync(new UserSearchRequest
             {
                 Period = UserInfoPeriod.CurrYear,
@@ -284,9 +284,9 @@ public class UserInfoProductionApiTests
     }
 
     [Test]
-    public void SearchUsers_PageNegative_ThrowsArgumentOutOfRange()
+    public async Task SearchUsers_PageNegative_ThrowsArgumentOutOfRange()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             _client.SearchUsersAsync(new UserSearchRequest
             {
                 Period = UserInfoPeriod.CurrYear,
@@ -295,9 +295,9 @@ public class UserInfoProductionApiTests
     }
 
     [Test]
-    public void SearchUsers_PageSizeZero_ThrowsArgumentOutOfRange()
+    public async Task SearchUsers_PageSizeZero_ThrowsArgumentOutOfRange()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             _client.SearchUsersAsync(new UserSearchRequest
             {
                 Period   = UserInfoPeriod.CurrYear,
@@ -306,9 +306,9 @@ public class UserInfoProductionApiTests
     }
 
     [Test]
-    public void SearchUsers_PageSizeOver200_ThrowsArgumentOutOfRange()
+    public async Task SearchUsers_PageSizeOver200_ThrowsArgumentOutOfRange()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             _client.SearchUsersAsync(new UserSearchRequest
             {
                 Period   = UserInfoPeriod.CurrYear,
@@ -435,23 +435,23 @@ public class UserInfoProductionApiTests
     }
 
     [Test]
-    public void GetUserDailyGain_MaxDateBeforeMinDate_ThrowsArgumentException()
+    public async Task GetUserDailyGain_MaxDateBeforeMinDate_ThrowsArgumentException()
     {
         var today     = DateOnly.FromDateTime(DateTime.UtcNow);
         var yesterday = today.AddDays(-1);
 
-        Assert.ThrowsAsync<ArgumentException>(() =>
+        await Assert.ThrowsAsync<ArgumentException>(() =>
             _client.GetUserDailyGainAsync(
                 _ownUsername, minDate: today, maxDate: yesterday));
     }
 
     [Test]
-    public void GetUserDailyGain_EmptyUsername_ThrowsArgumentException()
+    public async Task GetUserDailyGain_EmptyUsername_ThrowsArgumentException()
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         var from  = today.AddDays(-7);
 
-        Assert.ThrowsAsync<ArgumentException>(() =>
+        await Assert.ThrowsAsync<ArgumentException>(() =>
             _client.GetUserDailyGainAsync("", from, today));
     }
 
@@ -500,9 +500,9 @@ public class UserInfoProductionApiTests
     }
 
     [Test]
-    public void GetUserGain_EmptyUsername_ThrowsArgumentException()
+    public async Task GetUserGain_EmptyUsername_ThrowsArgumentException()
     {
-        Assert.ThrowsAsync<ArgumentException>(() =>
+        await Assert.ThrowsAsync<ArgumentException>(() =>
             _client.GetUserGainAsync(""));
     }
 
@@ -577,9 +577,9 @@ public class UserInfoProductionApiTests
     }
 
     [Test]
-    public void GetUserLivePortfolio_EmptyUsername_ThrowsArgumentException()
+    public async Task GetUserLivePortfolio_EmptyUsername_ThrowsArgumentException()
     {
-        Assert.ThrowsAsync<ArgumentException>(() =>
+        await Assert.ThrowsAsync<ArgumentException>(() =>
             _client.GetUserLivePortfolioAsync(""));
     }
 
@@ -654,9 +654,9 @@ public class UserInfoProductionApiTests
     }
 
     [Test]
-    public void GetUserTradeInfo_EmptyUsername_ThrowsArgumentException()
+    public async Task GetUserTradeInfo_EmptyUsername_ThrowsArgumentException()
     {
-        Assert.ThrowsAsync<ArgumentException>(() =>
+        await Assert.ThrowsAsync<ArgumentException>(() =>
             _client.GetUserTradeInfoAsync("", UserInfoPeriod.CurrYear));
     }
 }

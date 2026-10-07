@@ -181,21 +181,21 @@ public class UserInfoClientTests
     }
 
     [Test]
-    public void SearchUsersAsync_NullRequest_ThrowsArgumentNullException()
+    public async Task SearchUsersAsync_NullRequest_ThrowsArgumentNullException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentNullException>(() => client.SearchUsersAsync(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => client.SearchUsersAsync(null!));
     }
 
     [Test]
-    public void SearchUsersAsync_PageSizeAboveLimit_ThrowsArgumentOutOfRangeException()
+    public async Task SearchUsersAsync_PageSizeAboveLimit_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.SearchUsersAsync(new UserSearchRequest
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.SearchUsersAsync(new UserSearchRequest
         {
             Period = UserInfoPeriod.CurrYear,
             PageSize = EToroRequestLimits.MaxPageSize + 1
@@ -271,22 +271,22 @@ public class UserInfoClientTests
     }
 
     [Test]
-    public void GetUserGainAsync_LongUsername_ThrowsArgumentException()
+    public async Task GetUserGainAsync_LongUsername_ThrowsArgumentException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
         var username = new string('u', EToroRequestLimits.MaxUsernameLength + 1);
 
-        Assert.ThrowsAsync<ArgumentException>(() => client.GetUserGainAsync(username));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.GetUserGainAsync(username));
     }
 
     [Test]
-    public void GetUserGainAsync_UsernameWithControlCharacter_ThrowsArgumentException()
+    public async Task GetUserGainAsync_UsernameWithControlCharacter_ThrowsArgumentException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentException>(() => client.GetUserGainAsync("bad\nuser"));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.GetUserGainAsync("bad\nuser"));
     }
 
     [Test]

@@ -473,7 +473,7 @@ public class MarketDataProductionApiTests
         // Toto testuje client-side validaci â€” NEPROVEDE API volĂˇnĂ­
         var ids = Enumerable.Range(1, 101).ToList();
 
-        Assert.ThrowsAsync<ArgumentException>(
+        await Assert.ThrowsAsync<ArgumentException>(
             () => _client.GetRatesAsync(ids),
             "Client by mÄ›l hodit ArgumentOutOfRangeException pro > 100 IDs.");
     }
@@ -607,7 +607,7 @@ public class MarketDataProductionApiTests
     [Test]
     public async Task GetCandlesAsync_ExceedMaxCount_ClientThrows()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => _client.GetCandlesAsync(AaplInstrumentId, CandleInterval.OneDay, CandleDirection.Desc, 1001),
             "Client by mÄ›l hodit ArgumentOutOfRangeException pro candlesCount > 1000.");
     }
@@ -663,7 +663,7 @@ public class MarketDataProductionApiTests
             InstrumentFields.WeeklyPriceChange   // 6. field â†’ musĂ­ vyhodit
         };
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => _client.SearchInstrumentsAsync(new InstrumentSearchRequest { Fields = sixFields }),
             "Client by mÄ›l odmĂ­tnout > 5 fields.");
     }
@@ -671,7 +671,7 @@ public class MarketDataProductionApiTests
     [Test]
     public async Task SearchInstrumentsAsync_UnknownField_ClientThrows()
     {
-        Assert.ThrowsAsync<ArgumentException>(
+        await Assert.ThrowsAsync<ArgumentException>(
             () => _client.SearchInstrumentsAsync(new InstrumentSearchRequest
             {
                 Fields = ["nonExistentField123"]

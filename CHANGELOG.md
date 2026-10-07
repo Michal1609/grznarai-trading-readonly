@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.0-alpha.6] - 2026-10-07
+
+### Changed
+- Target framework moved from .NET 9 (`net9.0`) to .NET 10 (`net10.0`); CI and publish workflows now use the .NET 10 SDK, and the documentation lists .NET 10 SDK as the requirement.
+- Dependencies updated to latest stable: Microsoft.Extensions.* and System.Threading.RateLimiting 10.0.12, System.IdentityModel.Tokens.Jwt 8.23.0, Microsoft.SourceLink.GitHub 10.0.401.
+- Tests: NUnit 5.0.0 (async assertions are now awaited); Coinbase tests migrated from xunit 2 to xunit.v3 4.0.1 (`xunit.v3.mtp-off`, VSTest runner).
+
+### Fixed
+- Resolved CodeQL alerts (`cs/linq/missed-where`, `cs/useless-upcast`, `cs/dereferenced-value-may-be-null`).
+
 ## [1.0.0-alpha.5] - 2026-05-17
 
 ### Added

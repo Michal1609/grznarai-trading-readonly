@@ -354,7 +354,7 @@ public class EToroCalculationServiceTests
     }
 
     [Test]
-    public void GetAccountMetricsAsync_HitsMaxPagesWithFullLastPage_Throws()
+    public async Task GetAccountMetricsAsync_HitsMaxPagesWithFullLastPage_Throws()
     {
         // 3 pages available, maxPages=2, pageSize=1 â€” last fetched page is full â†’ must throw
         var handler = new MetricsHttpMessageHandler([
@@ -368,7 +368,7 @@ public class EToroCalculationServiceTests
         });
         var service = new EToroCalculationService(client);
 
-        Assert.ThrowsAsync<InvalidOperationException>(() =>
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
             service.GetAccountMetricsAsync(EToroEnvironment.Real, pageSize: 1, maxPages: 2));
         Assert.That(handler.TradeHistoryUris, Has.Count.EqualTo(2));
     }

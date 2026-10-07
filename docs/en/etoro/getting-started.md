@@ -26,7 +26,7 @@ terms of use.
 
 ## Requirements
 
-- .NET 9 SDK or newer.
+- .NET 10 SDK or newer.
 - eToro API key and user key.
 - An application using dependency injection and `IHttpClientFactory`.
 

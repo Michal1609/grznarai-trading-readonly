@@ -519,17 +519,17 @@ public class TradingDemoProductionApiTests
     }
 
     [Test]
-    public void GetOrderAsync_Demo_ZeroOrderId_ClientThrows()
+    public async Task GetOrderAsync_Demo_ZeroOrderId_ClientThrows()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => _client.GetOrderAsync(EToroEnvironment.Demo, 0L),
             "Client by mÄ›l odmĂ­tnout orderId=0.");
     }
 
     [Test]
-    public void GetOrderAsync_Demo_NegativeOrderId_ClientThrows()
+    public async Task GetOrderAsync_Demo_NegativeOrderId_ClientThrows()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => _client.GetOrderAsync(EToroEnvironment.Demo, -1L),
             "Client by mÄ›l odmĂ­tnout zĂˇpornĂ© orderId.");
     }

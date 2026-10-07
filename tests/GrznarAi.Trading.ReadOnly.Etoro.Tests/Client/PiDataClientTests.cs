@@ -140,11 +140,11 @@ public class PiDataClientTests
     }
 
     [Test]
-    public void GetCopiersPublicInfoAsync_ServerError_Throws()
+    public async Task GetCopiersPublicInfoAsync_ServerError_Throws()
     {
         var handler = new MockHttpMessageHandler("", System.Net.HttpStatusCode.Unauthorized);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(
+        var exception = await Assert.ThrowsAsync<EToroApiException>(
             () => CreateClient(handler).GetCopiersPublicInfoAsync());
 
         Assert.That(exception!.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.Unauthorized));

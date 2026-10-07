@@ -53,11 +53,11 @@ public class IdentityClientTests
     }
 
     [Test]
-    public void GetIdentityAsync_ServerError_Throws()
+    public async Task GetIdentityAsync_ServerError_Throws()
     {
         var handler = new MockHttpMessageHandler("", System.Net.HttpStatusCode.Unauthorized);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(
+        var exception = await Assert.ThrowsAsync<EToroApiException>(
             () => CreateClient(handler).GetIdentityAsync());
 
         Assert.That(exception!.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.Unauthorized));

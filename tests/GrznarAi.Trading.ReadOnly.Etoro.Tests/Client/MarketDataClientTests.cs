@@ -75,7 +75,7 @@ public class MarketDataClientTests
     {
         var handler = new MockHttpMessageHandler(string.Empty, HttpStatusCode.Unauthorized);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(
+        var exception = await Assert.ThrowsAsync<EToroApiException>(
             () => CreateClient(handler).GetExchangesAsync());
 
         Assert.That(exception!.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
@@ -129,7 +129,7 @@ public class MarketDataClientTests
     {
         var handler = new MockHttpMessageHandler(string.Empty, HttpStatusCode.Forbidden);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(
+        var exception = await Assert.ThrowsAsync<EToroApiException>(
             () => CreateClient(handler).GetInstrumentTypesAsync());
 
         Assert.That(exception!.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
@@ -219,7 +219,7 @@ public class MarketDataClientTests
     {
         var handler = new MockHttpMessageHandler(string.Empty, HttpStatusCode.Unauthorized);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(
+        var exception = await Assert.ThrowsAsync<EToroApiException>(
             () => CreateClient(handler).GetInstrumentMetadataAsync());
 
         Assert.That(exception!.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
@@ -277,7 +277,7 @@ public class MarketDataClientTests
     {
         var handler = new MockHttpMessageHandler(string.Empty, HttpStatusCode.Unauthorized);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(
+        var exception = await Assert.ThrowsAsync<EToroApiException>(
             () => CreateClient(handler).GetHistoricalClosingPricesAsync());
 
         Assert.That(exception!.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
@@ -342,7 +342,7 @@ public class MarketDataClientTests
     {
         var handler = new MockHttpMessageHandler(string.Empty, HttpStatusCode.Forbidden);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(
+        var exception = await Assert.ThrowsAsync<EToroApiException>(
             () => CreateClient(handler).GetStocksIndustriesAsync());
 
         Assert.That(exception!.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));

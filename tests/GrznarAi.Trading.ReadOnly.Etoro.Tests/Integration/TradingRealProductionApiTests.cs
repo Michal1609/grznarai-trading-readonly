@@ -341,17 +341,17 @@ public class TradingRealProductionApiTests
     }
 
     [Test]
-    public void GetOrderAsync_Real_ZeroOrderId_ClientThrows()
+    public async Task GetOrderAsync_Real_ZeroOrderId_ClientThrows()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => _client.GetOrderAsync(EToroEnvironment.Real, 0L),
             "Client by mÄ›l odmĂ­tnout orderId=0.");
     }
 
     [Test]
-    public void GetOrderAsync_Real_NegativeOrderId_ClientThrows()
+    public async Task GetOrderAsync_Real_NegativeOrderId_ClientThrows()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => _client.GetOrderAsync(EToroEnvironment.Real, -1L),
             "Client by mÄ›l odmĂ­tnout zĂˇpornĂ© orderId.");
     }
@@ -580,25 +580,25 @@ public class TradingRealProductionApiTests
     // â”€â”€â”€ client-side validace â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     [Test]
-    public void GetTradeHistoryAsync_NegativePage_ClientThrows()
+    public async Task GetTradeHistoryAsync_NegativePage_ClientThrows()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => _client.GetTradeHistoryAsync(DateTimeOffset.UtcNow.AddYears(-1), page: -1),
             "Client by mÄ›l odmĂ­tnout zĂˇpornĂ© page.");
     }
 
     [Test]
-    public void GetTradeHistoryAsync_ZeroPageSize_ClientThrows()
+    public async Task GetTradeHistoryAsync_ZeroPageSize_ClientThrows()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => _client.GetTradeHistoryAsync(DateTimeOffset.UtcNow.AddYears(-1), page: 0, pageSize: 0),
             "Client by mÄ›l odmĂ­tnout pageSize=0.");
     }
 
     [Test]
-    public void GetTradeHistoryAsync_NegativePageSize_ClientThrows()
+    public async Task GetTradeHistoryAsync_NegativePageSize_ClientThrows()
     {
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => _client.GetTradeHistoryAsync(DateTimeOffset.UtcNow.AddYears(-1), page: 0, pageSize: -1),
             "Client by mÄ›l odmĂ­tnout zĂˇpornĂ˝ pageSize.");
     }

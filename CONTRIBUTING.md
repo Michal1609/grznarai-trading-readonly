@@ -10,7 +10,7 @@ Thank you for your interest in contributing.
 
 ## Development setup
 
-Requirements: .NET 9 SDK.
+Requirements: .NET 10 SDK.
 
 ```bash
 git clone https://github.com/Michal1609/grznarai-trading-readonly.git
