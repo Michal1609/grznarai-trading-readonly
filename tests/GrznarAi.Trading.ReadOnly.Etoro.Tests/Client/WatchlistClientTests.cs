@@ -119,12 +119,12 @@ public class WatchlistClientTests
     }
 
     [Test]
-    public void GetMarketRecommendationsAsync_CountAboveLimit_ThrowsArgumentOutOfRangeException()
+    public async Task GetMarketRecommendationsAsync_CountAboveLimit_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             client.GetMarketRecommendationsAsync(EToroRequestLimits.MaxItemsCount + 1));
     }
 
@@ -184,12 +184,12 @@ public class WatchlistClientTests
     }
 
     [Test]
-    public void GetUserWatchlistsAsync_ItemsPerPageAboveLimit_ThrowsArgumentOutOfRangeException()
+    public async Task GetUserWatchlistsAsync_ItemsPerPageAboveLimit_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             client.GetUserWatchlistsAsync(itemsPerPageForSingle: EToroRequestLimits.MaxItemsPerPage + 1));
     }
 
@@ -252,12 +252,12 @@ public class WatchlistClientTests
     }
 
     [Test]
-    public void GetDefaultWatchlistItemsAsync_ItemsLimitAboveLimit_ThrowsArgumentOutOfRangeException()
+    public async Task GetDefaultWatchlistItemsAsync_ItemsLimitAboveLimit_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler("[]");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             client.GetDefaultWatchlistItemsAsync(itemsLimit: EToroRequestLimits.MaxItemsLimit + 1));
     }
 
@@ -286,12 +286,12 @@ public class WatchlistClientTests
     }
 
     [Test]
-    public void GetUsersPublicWatchlistsAsync_ZeroUserId_ThrowsArgumentOutOfRangeException()
+    public async Task GetUsersPublicWatchlistsAsync_ZeroUserId_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.GetUsersPublicWatchlistsAsync(0));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.GetUsersPublicWatchlistsAsync(0));
     }
 
     // â”€â”€â”€ GetSinglePublicWatchlistAsync â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -385,13 +385,13 @@ public class WatchlistClientTests
     }
 
     [Test]
-    public void GetSinglePublicWatchlistAsync_LongWatchlistId_ThrowsArgumentException()
+    public async Task GetSinglePublicWatchlistAsync_LongWatchlistId_ThrowsArgumentException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
         var watchlistId = new string('x', EToroRequestLimits.MaxWatchlistIdLength + 1);
 
-        Assert.ThrowsAsync<ArgumentException>(() => client.GetSinglePublicWatchlistAsync(1, watchlistId));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.GetSinglePublicWatchlistAsync(1, watchlistId));
     }
 
     // â”€â”€â”€ GetSingleWatchlistAsync â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -451,11 +451,11 @@ public class WatchlistClientTests
     }
 
     [Test]
-    public void GetSingleWatchlistAsync_WatchlistIdWithControlCharacter_ThrowsArgumentException()
+    public async Task GetSingleWatchlistAsync_WatchlistIdWithControlCharacter_ThrowsArgumentException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentException>(() => client.GetSingleWatchlistAsync("wl\n99"));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.GetSingleWatchlistAsync("wl\n99"));
     }
 }

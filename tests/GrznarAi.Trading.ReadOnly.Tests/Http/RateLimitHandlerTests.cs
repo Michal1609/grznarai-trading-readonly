@@ -324,7 +324,7 @@ public class RateLimitHandlerTests
     }
 
     [Test]
-    public void RateLimited_DelayCancellation_ThrowsTaskCanceledException()
+    public async Task RateLimited_DelayCancellation_ThrowsTaskCanceledException()
     {
         var inner = new SequentialHttpMessageHandler(
             () => new HttpResponseMessage(HttpStatusCode.TooManyRequests),
@@ -341,7 +341,7 @@ public class RateLimitHandlerTests
 
         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
 
-        Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
             await client.GetAsync("/test", cts.Token));
     }
 

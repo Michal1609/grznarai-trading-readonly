@@ -43,6 +43,6 @@ public class ApiDiagnosticsTests
 
         Assert.That(diagnostics.Last, Is.Not.Null);
         Assert.That(diagnostics.History, Has.Count.EqualTo(8));
-        Assert.That(diagnostics.History, Has.All.Matches<ApiResponseSnapshot>(snapshot => snapshot.StatusCode >= 0));
+        Assert.That(diagnostics.History, Has.All.Matches<ApiResponseSnapshot>(snapshot => snapshot!.StatusCode >= 0));
     }
 }

@@ -127,7 +127,7 @@ public class FeedClientTests
     {
         var handler = new MockHttpMessageHandler(string.Empty, HttpStatusCode.Unauthorized);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(
+        var exception = await Assert.ThrowsAsync<EToroApiException>(
             () => CreateClient(handler).GetInstrumentFeedPostsAsync(1));
 
         Assert.That(exception!.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
@@ -135,31 +135,31 @@ public class FeedClientTests
     }
 
     [Test]
-    public void GetInstrumentFeedPostsAsync_ZeroMarketId_ThrowsArgumentOutOfRangeException()
+    public async Task GetInstrumentFeedPostsAsync_ZeroMarketId_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler(EmptyDiscussionsJson);
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.GetInstrumentFeedPostsAsync(0));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.GetInstrumentFeedPostsAsync(0));
     }
 
     [Test]
-    public void GetInstrumentFeedPostsAsync_TakeAboveLimit_ThrowsArgumentOutOfRangeException()
+    public async Task GetInstrumentFeedPostsAsync_TakeAboveLimit_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler(EmptyDiscussionsJson);
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             client.GetInstrumentFeedPostsAsync(1, new FeedPostsRequest { Take = EToroRequestLimits.MaxTake + 1 }));
     }
 
     [Test]
-    public void GetInstrumentFeedPostsAsync_RequesterUserIdWithControlCharacter_ThrowsArgumentException()
+    public async Task GetInstrumentFeedPostsAsync_RequesterUserIdWithControlCharacter_ThrowsArgumentException()
     {
         var handler = new MockHttpMessageHandler(EmptyDiscussionsJson);
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentException>(() =>
+        await Assert.ThrowsAsync<ArgumentException>(() =>
             client.GetInstrumentFeedPostsAsync(1, new FeedPostsRequest { RequesterUserId = "user\n1" }));
     }
 
@@ -273,7 +273,7 @@ public class FeedClientTests
     {
         var handler = new MockHttpMessageHandler(string.Empty, HttpStatusCode.Forbidden);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(
+        var exception = await Assert.ThrowsAsync<EToroApiException>(
             () => CreateClient(handler).GetUserFeedPostsAsync(1));
 
         Assert.That(exception!.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
@@ -281,21 +281,21 @@ public class FeedClientTests
     }
 
     [Test]
-    public void GetUserFeedPostsAsync_ZeroUserId_ThrowsArgumentOutOfRangeException()
+    public async Task GetUserFeedPostsAsync_ZeroUserId_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler(EmptyDiscussionsJson);
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.GetUserFeedPostsAsync(0));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.GetUserFeedPostsAsync(0));
     }
 
     [Test]
-    public void GetUserFeedPostsAsync_ReactionsPageSizeAboveLimit_ThrowsArgumentOutOfRangeException()
+    public async Task GetUserFeedPostsAsync_ReactionsPageSizeAboveLimit_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler(EmptyDiscussionsJson);
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             client.GetUserFeedPostsAsync(1, new FeedPostsRequest
             {
                 ReactionsPageSize = EToroRequestLimits.MaxReactionsPageSize + 1

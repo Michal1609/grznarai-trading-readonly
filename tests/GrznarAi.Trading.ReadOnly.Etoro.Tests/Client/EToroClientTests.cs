@@ -33,7 +33,7 @@ public class EToroClientTests
     }
 
     [Test]
-    public void FailedRequest_RedactsSensitiveJsonResponseBody()
+    public async Task FailedRequest_RedactsSensitiveJsonResponseBody()
     {
         const string json = """
         {
@@ -52,7 +52,7 @@ public class EToroClientTests
         """;
         var handler = new MockHttpMessageHandler(json, HttpStatusCode.BadRequest);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(() =>
+        var exception = await Assert.ThrowsAsync<EToroApiException>(() =>
             CreateClient(handler).GetPnlAsync(EToroEnvironment.Real));
 
         Assert.That(exception!.ResponseBody, Does.Contain("safe detail"));
@@ -71,12 +71,12 @@ public class EToroClientTests
     }
 
     [Test]
-    public void FailedRequest_RedactsSensitiveTextResponseBody()
+    public async Task FailedRequest_RedactsSensitiveTextResponseBody()
     {
         const string body = "error apiKey=api-secret authorization=Bearer-secret x-user-key:header-user-secret message=safe";
         var handler = new MockHttpMessageHandler(body, HttpStatusCode.BadRequest);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(() =>
+        var exception = await Assert.ThrowsAsync<EToroApiException>(() =>
             CreateClient(handler).GetPnlAsync(EToroEnvironment.Real));
 
         Assert.That(exception!.ResponseBody, Does.Contain("message=safe"));
@@ -87,12 +87,12 @@ public class EToroClientTests
     }
 
     [Test]
-    public void FailedRequest_WhenRedactionDisabled_KeepsRawResponseBody()
+    public async Task FailedRequest_WhenRedactionDisabled_KeepsRawResponseBody()
     {
         const string body = "error apiKey=api-secret message=safe";
         var handler = new MockHttpMessageHandler(body, HttpStatusCode.BadRequest);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(() =>
+        var exception = await Assert.ThrowsAsync<EToroApiException>(() =>
             CreateClient(handler, options => options.RedactResponseBody = false)
                 .GetPnlAsync(EToroEnvironment.Real));
 
@@ -100,12 +100,12 @@ public class EToroClientTests
     }
 
     [Test]
-    public void FailedRequest_WhenResponseBodyDisabled_DoesNotReadBodyIntoException()
+    public async Task FailedRequest_WhenResponseBodyDisabled_DoesNotReadBodyIntoException()
     {
         const string body = "error message=safe";
         var handler = new MockHttpMessageHandler(body, HttpStatusCode.BadRequest);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(() =>
+        var exception = await Assert.ThrowsAsync<EToroApiException>(() =>
             CreateClient(handler, options => options.IncludeResponseBody = false)
                 .GetPnlAsync(EToroEnvironment.Real));
 
@@ -113,12 +113,12 @@ public class EToroClientTests
     }
 
     [Test]
-    public void FailedRequest_TruncatesResponseBodyUsingConfiguredLimit()
+    public async Task FailedRequest_TruncatesResponseBodyUsingConfiguredLimit()
     {
         const string body = "1234567890";
         var handler = new MockHttpMessageHandler(body, HttpStatusCode.BadRequest);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(() =>
+        var exception = await Assert.ThrowsAsync<EToroApiException>(() =>
             CreateClient(handler, options => options.MaxResponseBodyLength = 4)
                 .GetPnlAsync(EToroEnvironment.Real));
 
@@ -126,12 +126,12 @@ public class EToroClientTests
     }
 
     [Test]
-    public void FailedRequest_WhenMaxResponseBodyLengthIsNull_KeepsFullBody()
+    public async Task FailedRequest_WhenMaxResponseBodyLengthIsNull_KeepsFullBody()
     {
         var body = new string('a', ErrorHandlingOptions.DefaultMaxResponseBodyLength + 10);
         var handler = new MockHttpMessageHandler(body, HttpStatusCode.BadRequest);
 
-        var exception = Assert.ThrowsAsync<EToroApiException>(() =>
+        var exception = await Assert.ThrowsAsync<EToroApiException>(() =>
             CreateClient(handler, options => options.MaxResponseBodyLength = null)
                 .GetPnlAsync(EToroEnvironment.Real));
 
@@ -292,12 +292,12 @@ public class EToroClientTests
     }
 
     [Test]
-    public void GetTradeHistoryAsync_InvalidPageSize_ThrowsArgumentOutOfRangeException()
+    public async Task GetTradeHistoryAsync_InvalidPageSize_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler("[]");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             client.GetTradeHistoryAsync(new DateOnly(2024, 1, 1), pageSize: 0));
     }
 
@@ -485,12 +485,12 @@ public class EToroClientTests
     }
 
     [Test]
-    public void SearchInstrumentsAsync_MoreThan5Fields_ThrowsArgumentException()
+    public async Task SearchInstrumentsAsync_MoreThan5Fields_ThrowsArgumentException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
         {
             Fields =
             [
@@ -505,57 +505,57 @@ public class EToroClientTests
     }
 
     [Test]
-    public void SearchInstrumentsAsync_EmptyFields_ThrowsArgumentException()
+    public async Task SearchInstrumentsAsync_EmptyFields_ThrowsArgumentException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
+        await Assert.ThrowsAsync<ArgumentException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
         {
             Fields = []
         }));
     }
 
     [Test]
-    public void SearchInstrumentsAsync_NullRequest_ThrowsArgumentNullException()
+    public async Task SearchInstrumentsAsync_NullRequest_ThrowsArgumentNullException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentNullException>(() => client.SearchInstrumentsAsync(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => client.SearchInstrumentsAsync(null!));
     }
 
     [Test]
-    public void SearchInstrumentsAsync_NullFields_ThrowsArgumentNullException()
+    public async Task SearchInstrumentsAsync_NullFields_ThrowsArgumentNullException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentNullException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
+        await Assert.ThrowsAsync<ArgumentNullException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
         {
             Fields = null!
         }));
     }
 
     [Test]
-    public void SearchInstrumentsAsync_UnknownField_ThrowsArgumentException()
+    public async Task SearchInstrumentsAsync_UnknownField_ThrowsArgumentException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
+        await Assert.ThrowsAsync<ArgumentException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
         {
             Fields = ["NotARealField"]
         }));
     }
 
     [Test]
-    public void SearchInstrumentsAsync_PageSizeAboveLimit_ThrowsArgumentOutOfRangeException()
+    public async Task SearchInstrumentsAsync_PageSizeAboveLimit_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
         {
             Fields = [InstrumentFields.InstrumentId],
             PageSize = EToroRequestLimits.MaxSearchPageSize + 1
@@ -563,12 +563,12 @@ public class EToroClientTests
     }
 
     [Test]
-    public void SearchInstrumentsAsync_SearchTextWithControlCharacter_ThrowsArgumentException()
+    public async Task SearchInstrumentsAsync_SearchTextWithControlCharacter_ThrowsArgumentException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
+        await Assert.ThrowsAsync<ArgumentException>(() => client.SearchInstrumentsAsync(new InstrumentSearchRequest
         {
             Fields = [InstrumentFields.InstrumentId],
             SearchText = "AAPL\nMSFT"
@@ -591,21 +591,21 @@ public class EToroClientTests
     }
 
     [Test]
-    public void GetRatesAsync_NullInstrumentIds_ThrowsArgumentNullException()
+    public async Task GetRatesAsync_NullInstrumentIds_ThrowsArgumentNullException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentNullException>(() => client.GetRatesAsync(null!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => client.GetRatesAsync(null!));
     }
 
     [Test]
-    public void GetRatesAsync_TooManyInstrumentIds_ThrowsArgumentException()
+    public async Task GetRatesAsync_TooManyInstrumentIds_ThrowsArgumentException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentException>(() =>
+        await Assert.ThrowsAsync<ArgumentException>(() =>
             client.GetRatesAsync(Enumerable.Range(1, EToroRequestLimits.MaxCsvIds + 1)));
     }
 
@@ -636,21 +636,21 @@ public class EToroClientTests
     }
 
     [Test]
-    public void GetCandlesAsync_ZeroInstrumentId_ThrowsArgumentOutOfRangeException()
+    public async Task GetCandlesAsync_ZeroInstrumentId_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.GetCandlesAsync(0));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => client.GetCandlesAsync(0));
     }
 
     [Test]
-    public void GetCandlesAsync_CandlesCountAboveLimit_ThrowsArgumentOutOfRangeException()
+    public async Task GetCandlesAsync_CandlesCountAboveLimit_ThrowsArgumentOutOfRangeException()
     {
         var handler = new MockHttpMessageHandler("{}");
         var client = CreateClient(handler);
 
-        Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             client.GetCandlesAsync(1, candlesCount: EToroRequestLimits.MaxCandlesCount + 1));
     }
 

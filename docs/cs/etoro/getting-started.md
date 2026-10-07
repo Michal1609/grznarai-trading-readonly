@@ -21,7 +21,7 @@ Software pouĹľĂ­vejte vĂ˝hradnÄ› na vlastnĂ­ nebezpeÄŤĂ­.
 
 ## PoĹľadavky
 
-- .NET 9 SDK nebo novÄ›jĹˇĂ­.
+- .NET 10 SDK nebo novÄ›jĹˇĂ­.
 - eToro API key a user key.
 - Aplikace pouĹľĂ­vajĂ­cĂ­ dependency injection a `IHttpClientFactory`.
 

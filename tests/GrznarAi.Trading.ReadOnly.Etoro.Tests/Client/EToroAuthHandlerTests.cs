@@ -28,11 +28,11 @@ public class EToroAuthHandlerTests
     [TestCase("api\0key")]
     [TestCase("api\u001fkey")]
     [TestCase("api\u007fkey")]
-    public void SendAsync_WithInvalidApiKey_ThrowsInvalidOperationException(string apiKey)
+    public async Task SendAsync_WithInvalidApiKey_ThrowsInvalidOperationException(string apiKey)
     {
         using var client = CreateHttpClient(new HeaderCaptureHandler(), apiKey, userKey: "user-key");
 
-        Assert.ThrowsAsync<InvalidOperationException>(() => client.GetAsync("https://example.test/ping"));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => client.GetAsync("https://example.test/ping"));
     }
 
     [TestCase("user\rkey")]
@@ -40,11 +40,11 @@ public class EToroAuthHandlerTests
     [TestCase("user\0key")]
     [TestCase("user\u001fkey")]
     [TestCase("user\u007fkey")]
-    public void SendAsync_WithInvalidUserKey_ThrowsInvalidOperationException(string userKey)
+    public async Task SendAsync_WithInvalidUserKey_ThrowsInvalidOperationException(string userKey)
     {
         using var client = CreateHttpClient(new HeaderCaptureHandler(), apiKey: "api-key", userKey);
 
-        Assert.ThrowsAsync<InvalidOperationException>(() => client.GetAsync("https://example.test/ping"));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => client.GetAsync("https://example.test/ping"));
     }
 
     private static HttpClient CreateHttpClient(HttpMessageHandler innerHandler, string apiKey, string userKey)
