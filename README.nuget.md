@@ -74,6 +74,13 @@ Full documentation and source: https://github.com/Michal1609/grznarai-trading-re
 
 This project is not affiliated with, endorsed by, or connected to eToro or Coinbase. It does not provide financial advice. Use at your own risk.
 
+## Support development
+
+If these libraries save you time, consider supporting their development.
+Contributions help cover AI development tools, testing, and documentation.
+
+[Support my work on Ko-fi](https://ko-fi.com/michalgrznar)
+
 ## License
 
 MIT - Copyright (c) 2026 Michal Grznar.

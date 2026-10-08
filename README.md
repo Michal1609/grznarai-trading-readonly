@@ -129,6 +129,13 @@ dotnet test
 
 Native AOT smoke tests live in `tests/*Aot.SmokeTest`. CI publishes Core, eToro, and Coinbase smoke projects and packs all three NuGet packages.
 
+## Support development
+
+If these libraries save you time, consider supporting their development.
+Contributions help cover AI development tools, testing, and documentation.
+
+[Support my work on Ko-fi](https://ko-fi.com/michalgrznar)
+
 ## License
 
 MIT License. Copyright (c) 2026 Michal Grznar.
