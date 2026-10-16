@@ -55,6 +55,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
+          retention-days: 1
           name: test-results-${{ matrix.os }}
           path: "**/*.trx"
 
@@ -167,6 +168,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v7
         with:
+          retention-days: 1
           name: nuget-packages
           path: artifacts/packages/
 
